@@ -1,0 +1,33 @@
+name: Test STOL actions
+
+on:
+  push:
+
+jobs:
+  stol-actions:
+    runs-on: ubuntu-latest
+    container:
+      image: usdotfhwastoldev/carma-base:develop
+      options: --user carma
+    steps:
+      - name: Add STOL apt repository
+        uses: usdot-fhwa-stol/actions/add-stol-apt-repository@main
+        with:
+          codename: "develop"
+      - name: Install something
+        run: |
+          if [ "$(id --user)" -eq "0" ]; then
+            sudocmd=""
+          else
+            sudocmd="sudo"
+          fi
+          
+          $sudocmd apt-get -y install carma-j2735-msgs
+      - name: Install deb-s3
+        uses: usdot-fhwa-stol/actions/setup-deb-s3@main
+        with:
+          bloom: "true"
+          mk-build-deps: "true"
+      - name: Test deb-s3 install
+        run: |
+          deb-s3 help
