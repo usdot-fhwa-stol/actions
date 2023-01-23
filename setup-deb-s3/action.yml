@@ -15,6 +15,17 @@ runs:
     - name: Install deb-s3
       shell: bash
       run: |
+        if [ "$(id --user)" -eq "0" ]; then
+          sudocmd=""
+        else
+          sudocmd="sudo"
+        fi
+
+        if ! which lsb_release; then
+          $sudocmd apt-get update
+          $sudocmd apt-get -y install lsb-release
+        fi
+
         DISTRO_CODENAME=$(lsb_release -cs)
         DISTRO_ID=$(lsb_release -is)
         # Supported codenames and IDs found here: https://github.com/deb-s3/deb-s3/blob/master/.github/workflows/deb-release.yml
@@ -32,19 +43,13 @@ runs:
           echo "Unsupported distro ID: $DISTRO_ID, exiting"
           exit 1
         fi
-        
+
         SUPPORTED="false"
         for SUPPORTED_CODENAME in "${SUPPORTED_CODENAMES[@]}"; do
           if [ "$DISTRO_CODENAME" == "$SUPPORTED_CODENAME" ]; then
             SUPPORTED="true"
           fi
         done
-        
-        if [ "$(id --user)" -eq "0" ]; then
-          sudocmd=""
-        else
-          sudocmd="sudo"
-        fi
 
         if [ "$SUPPORTED" == "true" ]; then
           echo "Supported distro codename: $DISTRO_CODENAME"
