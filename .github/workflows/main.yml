@@ -7,11 +7,12 @@ jobs:
   stol-actions:
     runs-on: ubuntu-latest
     container:
-      image: usdotfhwastoldev/carma-base:develop
-      options: --user carma
+      image: ubuntu:focal
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Add STOL apt repository
-        uses: usdot-fhwa-stol/actions/add-stol-apt-repository@main
+        uses: ./add-stol-apt-repository/
         with:
           codename: "develop"
       - name: Install something
@@ -23,8 +24,8 @@ jobs:
           fi
           
           $sudocmd apt-get -y install carma-j2735-msgs
-      - name: Install deb-s3
-        uses: usdot-fhwa-stol/actions/setup-deb-s3@main
+      - name: Install deb-s3 selftest
+        uses: ./setup-deb-s3/
         with:
           bloom: "true"
           mk-build-deps: "true"
