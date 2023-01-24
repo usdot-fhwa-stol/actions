@@ -7,7 +7,8 @@ jobs:
   stol-actions:
     runs-on: ubuntu-latest
     container:
-      image: ubuntu:focal
+      image: usdotfhwastoldev/carma-base:develop
+      options: --user carma
     steps:
       - name: Checkout
         uses: actions/checkout@v3
