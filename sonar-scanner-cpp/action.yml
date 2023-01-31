@@ -8,7 +8,7 @@ inputs:
   github-token:
     description: 'A Github PAT'
     required: true
-  sonar-token:
+  sonarcloud-token:
     description: 'A Sonar Cloud token'
     required: true
 runs:
