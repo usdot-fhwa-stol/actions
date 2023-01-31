@@ -7,7 +7,7 @@ inputs:
     default: 'bw_output'
 runs:
   using: 'composite'
-    steps:
+  steps:
     - name: Install curl, zip, git, gcovr
       run: |
         apt update
