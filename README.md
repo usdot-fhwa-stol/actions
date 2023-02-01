@@ -14,12 +14,6 @@ Setup [deb-s3](https://github.com/deb-s3/deb-s3) and optionally install minimal 
 
 See [action.yml](setup-deb-s3/action.yml).
 
-## sonar-scanner-cpp
-
-Run [Sonar Scan for C++ projects](https://github.com/marketplace/actions/sonarcloud-scan-for-c-and-c) for STOL projects
-
-See [action.yml](sonar-scanner-cpp/action.yml).
-
 # STOL Reusable Workflows
 
 There are resuable workflows included in this repository.
