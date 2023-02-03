@@ -1,0 +1,35 @@
+name: C++ Module Build workflow
+
+on:
+  workflow_call:
+    secrets:
+      aws-access-key-id:
+        required: true
+      aws-secret-access-key:
+        required: true
+
+jobs:
+  cpp-module-build:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/usdot-fhwa-stol/carma-builds:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          if [ -f install_dependencies.sh ]; then
+            apt update
+            ./install_dependencies.sh
+          fi # check file existence
+      - name: Build
+        run: |
+          ./build.sh
+      - name: Setup deb-s3
+        uses: usdot-fhwa-stol/actions/setup-deb-s3@main
+      - name: Upload .deb files
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.aws-access-key-id }}
+          AWS_SECRET_ACCESS_KEY: ${{ aws-secret-access-key }}
+        run: |
+          deb-s3 upload --codename develop --bucket ${{ env.AWS_BUCKET_NAME }} build/_packages/*.deb
