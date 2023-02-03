@@ -30,7 +30,7 @@ jobs:
       - name: Upload .deb files
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.aws-access-key-id }}
-          AWS_SECRET_ACCESS_KEY: ${{ aws-secret-access-key }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.aws-secret-access-key }}
           AWS_BUCKET_NAME: stol-apt-repository
         run: |
           deb-s3 upload --codename develop --bucket ${{ env.AWS_BUCKET_NAME }} build/_packages/*.deb
