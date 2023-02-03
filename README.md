@@ -18,6 +18,12 @@ See [action.yml](setup-deb-s3/action.yml).
 
 There are resuable workflows included in this repository.
 
+## cpp-module-build
+
+Run a C++ build for STOL projects using the [carma-builds](https://github.com/usdot-fhwa-stol/carma-builds) Docker container.
+
+See [cpp-module-build.yml](.github/workflows/cpp-module-build.yml).
+
 ## sonar-scanner-cpp
 
 Run [Sonar Scan for C++ projects](https://github.com/marketplace/actions/sonarcloud-scan-for-c-and-c) for STOL projects
