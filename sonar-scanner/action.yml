@@ -1,0 +1,48 @@
+name: 'Run sonar-scanner'
+description: 'Run sonar-scanner'
+inputs:
+  sonar-properties-path:
+    description: 'Path to sonar-scanner.properties, can be relative to working directory'
+    required: false
+    default: '.sonarqube/sonar-scanner.properties'
+  sonar-token:
+    description: 'Token for use with SonarCloud'
+    required: true
+  working-dir:
+    description: 'Top directory to run sonar-scanner from'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Run sonar-scanner
+      shell: bash
+      run: |
+        INIT_ENV="/home/carma/.base-image/init-env.sh"
+        if [ ! -f "$INIT_ENV" ]; then
+          echo "File does not exist!: $INIT_ENV"
+          exit 1
+        else
+          source "$INIT_ENV"
+        fi
+
+        if ! which sonar-scanner; then
+          'Unable to find sonar-scanner in $PATH'
+          exit 1
+        fi
+
+        if [ -d "${{ inputs.working-dir }}" ]; then
+          cd "${{ inputs.working-dir }}" || exit 1
+        else
+          echo "Directory does not exist!: ${{ inputs.working-dir }}"
+        fi
+
+        if [ ! -f "${{ inputs.sonar-properties-path }}" ]; then
+          echo "File does not exist!: ${{ inputs.sonar-properties-path }}"
+          exit 1
+        fi
+
+        if [ "${{ github.event_name }}" == "pull_request" ]; then
+          sonar-scanner -Dproject.settings="${{ inputs.sonar-properties-path }}" -Dsonar.login="${{ inputs.sonar-token }}" -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }} -Dsonar.pullrequest.branch=${{ github.ref }} -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
+        else
+          sonar-scanner -Dproject.settings="${{ inputs.sonar-properties-path }}" -Dsonar.login="${{ inputs.sonar-token }}"
+        fi
