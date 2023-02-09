@@ -24,11 +24,26 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Determine master git tag
+        if: github.ref == 'refs/heads/carma-master' || github.ref == 'refs/heads/master'
+        run: |
+          GIT_TAG="$(git tag --points-at HEAD)"
+          if [ -z "$GIT_TAG" ]; then
+              echo "No git tag found for commit $GITHUB_SHA"
+              echo "This is required for pushing master to Docker Hub"
+              echo "Tag the commit with a version number and try again"
+              exit 1
+          else
+              echo GIT_TAG="$GIT_TAG" >> $GITHUB_ENV
+          fi
       - name: Determine Docker Hub org and tag from git branch
         run: |
           if [[ "$GITHUB_REF_NAME" =~ release/(.*) ]]; then
               echo DOCKERHUB_ORG="usdotfhwastolcandidate" >> $GITHUB_ENV
               echo DOCKERHUB_TAG="${BASH_REMATCH[1]}" >> $GITHUB_ENV
+          elif [ "$GITHUB_REF_NAME" == "carma-master" ] || [ "$GITHUB_REF_NAME" == "master" ]; then
+              echo DOCKERHUB_ORG="usdotfhwastol" >> $GITHUB_ENV
+              echo DOCKERHUB_TAG="$GIT_TAG" >> $GITHUB_ENV
           else
               echo DOCKERHUB_ORG="usdotfhwastoldev" >> $GITHUB_ENV
               # Replace / with - in branch name
