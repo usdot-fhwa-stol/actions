@@ -36,6 +36,7 @@ jobs:
               echo "Tag the commit with a version number and try again"
               exit 1
           else
+              echo "Found git tag $GIT_TAG"
               echo GIT_TAG="$GIT_TAG" >> $GITHUB_ENV
           fi
       - name: Determine Docker Hub org and tag from git branch
