@@ -47,21 +47,28 @@ jobs:
           if [ -f install_dependencies.sh ]; then
             ./install_dependencies.sh
           fi
-          # set up organziation and project keys
-          echo "sonar.organization=${{ inputs.sonar-organization }}" >> sonar-project.properties
-          echo "sonar.projectKey=${{ inputs.sonar-project-key }}" >> sonar-project.properties
-          # set up common Sonar scan properties
-          echo "sonar.cfamily.cache.enabled=false" >> sonar-project.properties
-          echo "sonar.sources=src" >> sonar-project.properties
-          # Note: For C++ setting this field does not cause test analysis to occur. It only allows the test source code to be evaluated.
-          echo "sonar.tests=test" >> sonar-project.properties
-          echo "sonar.coverageReportPaths=build/coverage_sonar.xml" >> sonar-project.properties
+
+          # Write sonar-project.properties file
+          {
+            echo "sonar.host.url=https://sonarcloud.io"
+            echo "sonar.login=${SONAR_TOKEN}"
+            # set up organization and project keys
+            echo "sonar.organization=${{ inputs.sonar-organization }}"
+            echo "sonar.projectKey=${{ inputs.sonar-project-key }}"
+            # set up common Sonar scan properties
+            echo "sonar.sources=src"
+            # Note: For C++ setting this field does not cause test analysis to occur. It only allows the test source code to be evaluated.
+            echo "sonar.tests=test"
+            echo "sonar.coverageReportPaths=build/coverage_sonar.xml"
+            echo "sonar.cfamily.build-wrapper-output=${{ inputs.build-wrapper-out-dir }}"
+          } > sonar-project.properties
 
           build-wrapper-linux-x86-64 --out-dir ${{ inputs.build-wrapper-out-dir }} bash ./build.sh -c
           # check for coverage in expected location
           ls -al build/coverage_sonar.xml
       - name: Run sonar-scanner
-        env:
-          GITHUB_TOKEN: ${{ secrets.github-token }}
-          SONAR_TOKEN: ${{ secrets.sonarcloud-token }}
-        run: sonar-scanner --define sonar.cfamily.build-wrapper-output="${{ inputs.build-wrapper-out-dir }}" #Consult https://docs.sonarcloud.io/advanced-setup/ci-based-analysis/sonarscanner-cli/ for more information and options
+        uses: usdot-fhwa-stol/actions/sonar-scanner@main
+        with:
+          sonar-properties-path: ./sonar-project.properties
+          sonar-token: ${{ secrets.sonarcloud-token }}
+          working-dir: ${{ github.workspace }}
