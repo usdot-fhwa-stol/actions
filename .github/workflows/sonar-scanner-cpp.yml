@@ -40,14 +40,8 @@ jobs:
           fetch-depth: 0
       - name:  Install sonar-scanner and build-wrapper
         uses: sonarsource/sonarcloud-github-c-cpp@v1
-      - name: Run build-wrapper
-        # here goes your compilation wrapped with build-wrapper; See https://docs.sonarcloud.io/advanced-setup/languages/c-c-objective-c/#analysis-steps-using-build-wrapper for more information
+      - name: Generate sonar-project.properties
         run: |
-          # build-preparation steps
-          if [ -f install_dependencies.sh ]; then
-            ./install_dependencies.sh
-          fi
-
           # Write sonar-project.properties file
           {
             echo "sonar.host.url=https://sonarcloud.io"
@@ -62,8 +56,23 @@ jobs:
             echo "sonar.coverageReportPaths=build/coverage_sonar.xml"
             echo "sonar.cfamily.build-wrapper-output=${{ inputs.build-wrapper-out-dir }}"
           } > sonar-project.properties
+      - name: Run install_dependencies.sh script
+        run: |
+          if [ -f install_dependencies.sh ]; then
+            chmod +x install_dependencies.sh
+            ./install_dependencies.sh
+          fi
+      - name: Run build.sh script with build-wrapper
+        # here goes your compilation wrapped with build-wrapper; See https://docs.sonarcloud.io/advanced-setup/languages/c-c-objective-c/#analysis-steps-using-build-wrapper for more information
+        run: |
+          if [ -f build.sh ]; then
+            chmod +x build.sh
+            build-wrapper-linux-x86-64 --out-dir ${{ inputs.build-wrapper-out-dir }} ./build.sh -c
+          else
+            echo "No build.sh script found. Exiting..."
+            exit 1
+          fi
 
-          build-wrapper-linux-x86-64 --out-dir ${{ inputs.build-wrapper-out-dir }} bash ./build.sh -c
           # check for coverage in expected location
           ls -al build/coverage_sonar.xml
       - name: Run sonar-scanner
