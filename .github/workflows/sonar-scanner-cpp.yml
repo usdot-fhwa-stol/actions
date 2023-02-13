@@ -56,7 +56,6 @@ jobs:
             echo "sonar.organization=${{ inputs.sonar-organization }}"
             echo "sonar.projectKey=${{ inputs.sonar-project-key }}"
             # set up common Sonar scan properties
-            echo "sonar.cfamily.cache.enabled=false"
             echo "sonar.sources=src"
             # Note: For C++ setting this field does not cause test analysis to occur. It only allows the test source code to be evaluated.
             echo "sonar.tests=test"
