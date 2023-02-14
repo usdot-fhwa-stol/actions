@@ -20,7 +20,7 @@ Setup [Sonar](https://sonarcloud.io/) scan and results upload.
 
 To use ensure the following steps have been taken:
 * The Sonar project has been created under https://sonarcloud.io/organizations/usdot-fhwa-stol/projects.
-* The Sonar project has been set to give **Administer Issues** priveleges to the **Issue Administrators** group.  This allows developers to mark issues as **false postive** or **won't fix** as necessary because the scanner is not perfect.
+* The Sonar project has been set to give **Administer Issues** privileges to the **Issue Administrators** group. This allows developers to mark issues as **false postive** or **won't fix** as necessary because the scanner is not perfect.
 
 See [action.yml](sonar-scanner/action.yml).
 
