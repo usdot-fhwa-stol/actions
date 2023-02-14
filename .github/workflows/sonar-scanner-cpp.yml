@@ -37,7 +37,6 @@ jobs:
       - name: Set Image Name
       - id: set_image
         run: echo "::set-output name=image::${{ inputs.build-image-tag }}"
-
   sonar-scanner-cpp:
     runs-on: ubuntu-latest
     needs: image-name-get
