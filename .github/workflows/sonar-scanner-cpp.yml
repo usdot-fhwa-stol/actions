@@ -35,7 +35,7 @@ jobs:
       image: ${{ steps.set_image.outputs.image }}
     steps:
       - id: set_image
-        run: echo "::set-output name=image::${{ inputs.build-image-tag }}"
+        run: echo "image=${{ inputs.build-image-tag }}" >> $GITHUB_OUTPUT
   sonar-scanner-cpp:
     runs-on: ubuntu-latest
     needs: image-name-get
