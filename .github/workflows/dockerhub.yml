@@ -49,8 +49,12 @@ jobs:
               echo DOCKERHUB_TAG="$GIT_TAG" >> $GITHUB_ENV
           else
               echo DOCKERHUB_ORG="usdotfhwastoldev" >> $GITHUB_ENV
-              # Replace / with - in branch name
-              echo DOCKERHUB_TAG=${GITHUB_REF_NAME/\//-} >> $GITHUB_ENV
+              if [ "$GITHUB_REF_NAME" == "carma-develop" ]; then
+                  echo DOCKERHUB_TAG="develop" >> $GITHUB_ENV
+              else
+                  # Replace / with - in branch name
+                  echo DOCKERHUB_TAG=${GITHUB_REF_NAME/\//-} >> $GITHUB_ENV
+              fi
           fi
       - name: Build
         uses: docker/build-push-action@v3
