@@ -14,6 +14,16 @@ Setup [deb-s3](https://github.com/deb-s3/deb-s3) and optionally install minimal 
 
 See [action.yml](setup-deb-s3/action.yml).
 
+## sonar-scanner
+
+Setup [Sonar](https://sonarcloud.io/) scan and results upload.
+
+To use ensure the following steps have been taken:
+* The Sonar project has been created under https://sonarcloud.io/organizations/usdot-fhwa-stol/projects.
+* The Sonar project has been set to give **Administer Issues** priveleges to the **Issue Administrators** group.  This allows developers to mark issues as **false postive** or **won't fix** as necessary because the scanner is not perfect.
+
+See [action.yml](sonar-scanner/action.yml).
+
 # STOL Reusable Workflows
 
 There are resuable workflows included in this repository.
@@ -29,7 +39,7 @@ See [cpp-module-build.yml](.github/workflows/cpp-module-build.yml).
 Run [Sonar Scan for C++ projects](https://github.com/marketplace/actions/sonarcloud-scan-for-c-and-c) for STOL projects
 
 To use ensure the following steps have been taken:
-* The Sonar project has been created under https://sonarcloud.io/organizations/usdot-fhwa-stol/projects.
+* The steps above for the sonar-scanner action have been completed.
 * The token from the Sonar project has been added to the target repository under Settings -> Secrets and Variables -> Actions as SONAR_TOKEN in the "Repository secrets" section.
 
 See [sonar-scanner-cpp.yml](.github/workflows/sonar-scanner-cpp.yml).
