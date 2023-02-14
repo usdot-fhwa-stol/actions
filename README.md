@@ -16,7 +16,7 @@ See [action.yml](setup-deb-s3/action.yml).
 
 ## sonar-scanner
 
-Setup [Sonar](https://sonarcloud.io/) scan and results upload.
+Run [SonarScanner](https://sonarcloud.io/).
 
 To use ensure the following steps have been taken:
 * The Sonar project has been created under https://sonarcloud.io/organizations/usdot-fhwa-stol/projects.
