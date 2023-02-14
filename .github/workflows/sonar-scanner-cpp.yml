@@ -34,7 +34,6 @@ jobs:
     outputs:
       image: ${{ steps.set_image.outputs.image }}
     steps:
-      - name: Set Image Name
       - id: set_image
         run: echo "::set-output name=image::${{ inputs.build-image-tag }}"
   sonar-scanner-cpp:
