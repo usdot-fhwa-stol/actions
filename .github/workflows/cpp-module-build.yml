@@ -2,6 +2,12 @@ name: C++ Module Build workflow
 
 on:
   workflow_call:
+    inputs:
+      build-image-tag:
+        description: 'Build image tag for ghcr.io/usdot-fhwa-stol/carma-builds'
+        required: false
+        type: string
+        default: 'latest'
     secrets:
       aws-access-key-id:
         required: true
@@ -9,10 +15,18 @@ on:
         required: true
 
 jobs:
+  image-name-get:
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.set_image.outputs.image }}
+    steps:
+      - id: set_image
+        run: echo "image=${{ inputs.build-image-tag }}" >> $GITHUB_OUTPUT
   cpp-module-build:
     runs-on: ubuntu-latest
+    needs: image-name-get
     container:
-      image: ghcr.io/usdot-fhwa-stol/carma-builds:latest
+      image: ghcr.io/usdot-fhwa-stol/carma-builds:${{ needs.image-name-get.outputs.image }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
