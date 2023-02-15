@@ -38,7 +38,11 @@ jobs:
           fi # check file existence
       - name: Build
         run: |
-          ./build.sh
+          echo GITHUB_REF_TYPE=${GITHUB_REF_TYPE}
+          if [ "${GITHUB_REF_TYPE}" == "branch" ]; then
+            PACKAGE_VERSION_SUFFIX_ARG="-s beta"
+          fi
+          ./build.sh ${PACKAGE_VERSION_SUFFIX_ARG}
       - name: Setup deb-s3
         uses: usdot-fhwa-stol/actions/setup-deb-s3@main
       - name: Upload .deb files
