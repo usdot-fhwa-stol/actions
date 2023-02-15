@@ -8,6 +8,12 @@ Add STOL apt repository to `/etc/apt/sources.list.d`.
 
 See [action.yml](add-stol-apt-repository/action.yml).
 
+## build-cpp-library
+
+Build a typical STOL C++ library using the library's build.sh script.  Sets Debian package version to "beta" for non-tags.
+
+See [action.yml](build-cpp-library/action.yml).
+
 ## setup-deb-s3
 
 Setup [deb-s3](https://github.com/deb-s3/deb-s3) and optionally install minimal helpful tools for building Debian/Ubuntu packages.
