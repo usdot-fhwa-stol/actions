@@ -75,17 +75,14 @@ jobs:
             chmod +x install_dependencies.sh
             ./install_dependencies.sh
           fi
-      - name: Run build.sh script with build-wrapper
+      - name: Run build script with build-wrapper
         # here goes your compilation wrapped with build-wrapper; See https://docs.sonarcloud.io/advanced-setup/languages/c-c-objective-c/#analysis-steps-using-build-wrapper for more information
+        uses: usdot-fhwa-stol/actions/build-cpp-library@debian_beta_packages
+        with:
+          build-wrapper: build-wrapper-linux-x86-64 --out-dir ${{ inputs.build-wrapper-out-dir }}
+          build-options: -c
+      - name: Check coverage output
         run: |
-          if [ -f build.sh ]; then
-            chmod +x build.sh
-            build-wrapper-linux-x86-64 --out-dir ${{ inputs.build-wrapper-out-dir }} ./build.sh -c
-          else
-            echo "No build.sh script found. Exiting..."
-            exit 1
-          fi
-
           # check for coverage in expected location
           ls -al build/coverage_sonar.xml
       - name: Run sonar-scanner
