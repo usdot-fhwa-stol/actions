@@ -37,9 +37,9 @@ jobs:
             ./install_dependencies.sh
           fi # check file existence
       - name: Build
-        uses: ./build-cpp-library/
+        uses: usdot-fhwa-stol/actions/build-cpp-library@debian_beta_packages
       - name: Setup deb-s3
-        uses: ./setup-deb-s3/
+        uses: usdot-fhwa-stol/actions/setup-deb-s3@main
       - name: Upload .deb files
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.aws-access-key-id }}
