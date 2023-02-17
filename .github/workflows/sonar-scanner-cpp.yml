@@ -77,7 +77,7 @@ jobs:
           fi
       - name: Run build script with build-wrapper
         # here goes your compilation wrapped with build-wrapper; See https://docs.sonarcloud.io/advanced-setup/languages/c-c-objective-c/#analysis-steps-using-build-wrapper for more information
-        uses: usdot-fhwa-stol/actions/build-cpp-library@debian_beta_packages
+        uses: usdot-fhwa-stol/actions/build-cpp-library@main
         with:
           build-wrapper: build-wrapper-linux-x86-64 --out-dir ${{ inputs.build-wrapper-out-dir }}
           build-options: -c
