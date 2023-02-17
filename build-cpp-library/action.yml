@@ -16,7 +16,7 @@ runs:
         if [ -f build.sh ]; then
           echo GITHUB_REF_TYPE=${GITHUB_REF_TYPE}
           if [ "${GITHUB_REF_TYPE}" == "branch" ]; then
-            PACKAGE_VERSION_SUFFIX_ARG="-s beta"
+            PACKAGE_VERSION_SUFFIX_ARG="-s delta"
           fi
           ${{ inputs.build-wrapper }} ./build.sh ${{ inputs.build-options }} ${PACKAGE_VERSION_SUFFIX_ARG}
         else
