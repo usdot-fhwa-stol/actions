@@ -27,6 +27,8 @@ jobs:
     outputs:
       git-revision-info: ${{ steps.get_git_info.outputs.revision_info }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - id: get_git_info
         run: |
           echo GITHUB_REF_TYPE=${GITHUB_REF_TYPE}
