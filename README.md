@@ -40,6 +40,12 @@ Run a C++ build for STOL projects using the [carma-builds](https://github.com/us
 
 See [cpp-module-build.yml](.github/workflows/cpp-module-build.yml).
 
+## git-revision-info
+
+Get the git revision info string for a repository and store it in the output *git-revision-info*.
+
+See [git-revision-info.yml](.github/workflows/git-revision-info.yml).
+
 ## sonar-scanner-cpp
 
 Run [Sonar Scan for C++ projects](https://github.com/marketplace/actions/sonarcloud-scan-for-c-and-c) for STOL projects

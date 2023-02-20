@@ -1,0 +1,19 @@
+name: Get revision info from repository
+
+on:
+  workflow_call:
+
+jobs:
+  git-revision-info-get:
+    runs-on: ubuntu-latest
+    outputs:
+      git-revision-info: ${{ steps.get_git_info.outputs.revision_info }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - id: get_git_info
+        run: |
+          echo GITHUB_REF_TYPE=${GITHUB_REF_TYPE}
+          if [ "${GITHUB_REF_TYPE}" == "branch" ]; then
+             echo "revision_info=$(date +%Y%m%d).git$(git rev-list --count HEAD).$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          fi
