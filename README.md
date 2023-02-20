@@ -10,7 +10,7 @@ See [action.yml](add-stol-apt-repository/action.yml).
 
 ## build-cpp-library
 
-Build a typical STOL C++ library using the library's build.sh script.  Sets Debian package version to "beta" for non-tags.
+Build a typical STOL C++ library using the library's build.sh script.  Sets Debian package version with git revision info for non-tags.
 
 See [action.yml](build-cpp-library/action.yml).
 
