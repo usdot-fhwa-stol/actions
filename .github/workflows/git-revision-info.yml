@@ -15,5 +15,7 @@ jobs:
         run: |
           echo GITHUB_REF_TYPE=${GITHUB_REF_TYPE}
           if [ "${GITHUB_REF_TYPE}" == "branch" ]; then
-             echo "revision_info=$(date +%Y%m%d).git$(git rev-list --count HEAD).$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+            REVISION_INFO="$(date +%Y%m%d).git$(git rev-list --count HEAD).$(git rev-parse --short HEAD)"
+            echo REVISION_INFO=${REVISION_INFO}
+            echo "revision_info=${REVISION_INFO}" >> $GITHUB_OUTPUT
           fi
