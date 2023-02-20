@@ -1,0 +1,27 @@
+name: 'Build C++ Library'
+description: 'Build a typical STOL C++ library'
+inputs:
+  build-options:
+    description: 'Options to pass to the build script'
+    required: false
+  build-wrapper:
+    description: 'Build wrapper for the build script'
+    required: false
+  package-version-suffix:
+    description: 'Suffix use in the package version'
+    required: false
+runs:
+  using: 'composite'
+  steps:
+    - name: Run build script
+      shell: bash
+      run: |
+        if [ -f build.sh ]; then
+          if [ ! -z "${{ inputs.package-version-suffix }}" ]; then
+            PACKAGE_VERSION_SUFFIX_ARG="-s ${{ inputs.package-version-suffix }}"
+          fi
+          ${{ inputs.build-wrapper }} ./build.sh ${{ inputs.build-options }} ${PACKAGE_VERSION_SUFFIX_ARG}
+        else
+          echo "No build.sh script found. Exiting..."
+          exit 1
+        fi
