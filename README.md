@@ -10,7 +10,7 @@ See [action.yml](add-stol-apt-repository/action.yml).
 
 ## build-cpp-library
 
-Build a typical STOL C++ library using the library's build.sh script.  Sets Debian package version with git revision info for non-tags.
+Build a typical STOL C++ library using the library's build.sh script.  Can pass in suffix info for Debian package name.
 
 See [action.yml](build-cpp-library/action.yml).
 
@@ -36,7 +36,7 @@ There are resuable workflows included in this repository.
 
 ## cpp-module-build
 
-Run a C++ build for STOL projects using the [carma-builds](https://github.com/usdot-fhwa-stol/carma-builds) Docker container.
+Run a C++ build for STOL projects using the [carma-builds](https://github.com/usdot-fhwa-stol/carma-builds) Docker container.  Includes git revision info in the Debian package name for non-tag builds.
 
 See [cpp-module-build.yml](.github/workflows/cpp-module-build.yml).
 

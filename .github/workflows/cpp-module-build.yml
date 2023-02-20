@@ -54,7 +54,7 @@ jobs:
       - name: Build
         uses: usdot-fhwa-stol/actions/build-cpp-library@main
         with:
-          git-revision-info: ${{ needs.git-revision-info-get.outputs.git-revision-info }}
+          package-version-suffix: ${{ needs.git-revision-info-get.outputs.git-revision-info }}
       - name: Setup deb-s3
         uses: usdot-fhwa-stol/actions/setup-deb-s3@main
       - name: Upload .deb files
