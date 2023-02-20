@@ -52,7 +52,7 @@ jobs:
             ./install_dependencies.sh
           fi # check file existence
       - name: Build
-        uses: usdot-fhwa-stol/actions/build-cpp-library@debian_beta_packages
+        uses: usdot-fhwa-stol/actions/build-cpp-library@main
         with:
           git-revision-info: ${{ needs.git-revision-info-get.outputs.git-revision-info }}
       - name: Setup deb-s3
