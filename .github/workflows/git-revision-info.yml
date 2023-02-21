@@ -6,7 +6,7 @@ on:
     outputs:
       git-revision-info:
         description: "The git revision info from the current branch"
-        value: ${{ jobs.get_git_info.outputs.git-revision-info }}
+        value: ${{ jobs.git-revision-info-get.outputs.git-revision-info }}
 
 jobs:
   git-revision-info-get:
