@@ -2,6 +2,11 @@ name: Get revision info from repository
 
 on:
   workflow_call:
+    # Map the workflow outputs to job outputs
+    outputs:
+      git-revision-info:
+        description: "The git revision info from the current branch"
+        value: ${{ jobs.get_git_info.outputs.git-revision-info }}
 
 jobs:
   git-revision-info-get:
