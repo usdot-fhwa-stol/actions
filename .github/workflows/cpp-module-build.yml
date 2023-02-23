@@ -60,4 +60,5 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.aws-secret-access-key }}
           AWS_BUCKET_NAME: stol-apt-repository
         run: |
-          deb-s3 upload --codename develop --bucket ${{ env.AWS_BUCKET_NAME }} build/_packages/*.deb
+          # use build* as could be any architecture
+          deb-s3 upload --codename develop --bucket ${{ env.AWS_BUCKET_NAME }} build*/_packages/*.deb
