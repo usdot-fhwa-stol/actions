@@ -30,7 +30,7 @@ jobs:
           if [ "${{ inputs.build-architecture }}" != "x64" ]; then
             BUILD_ARCHITECTURE="-${{ inputs.build-architecture }}"
           fi
-          echo "image=${{ inputs.build-image-tag }}${BUILD_ARCHITECTURE}" >> $GITHUB_OUTPUT
+          echo "image=carma-builds${BUILD_ARCHITECTURE}:${{ inputs.build-image-tag }}" >> $GITHUB_OUTPUT
   git-revision-info-get:
     uses: usdot-fhwa-stol/actions/.github/workflows/git-revision-info.yml@main
   cpp-module-build:
@@ -39,7 +39,7 @@ jobs:
       - image-name-get
       - git-revision-info-get
     container:
-      image: ghcr.io/usdot-fhwa-stol/carma-builds:${{ needs.image-name-get.outputs.image }}
+      image: ghcr.io/usdot-fhwa-stol/${{ needs.image-name-get.outputs.image }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
