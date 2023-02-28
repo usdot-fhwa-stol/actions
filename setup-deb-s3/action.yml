@@ -15,6 +15,7 @@ runs:
     - name: Install deb-s3
       shell: bash
       run: |
+        $GITHUB_ACTION_PATH/setup.sh
         if [ "$(id --user)" -eq "0" ]; then
           sudocmd=""
         else
