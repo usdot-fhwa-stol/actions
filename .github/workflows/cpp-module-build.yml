@@ -3,6 +3,11 @@ name: C++ Module Build workflow
 on:
   workflow_call:
     inputs:
+      build-architecture:
+        description: 'Build architecture, defaults x64, supported: arm'
+        required: false
+        type: string
+        default: 'x64'
       build-image-tag:
         description: 'Build image tag for ghcr.io/usdot-fhwa-stol/carma-builds'
         required: false
@@ -21,7 +26,11 @@ jobs:
       image: ${{ steps.set_image.outputs.image }}
     steps:
       - id: set_image
-        run: echo "image=${{ inputs.build-image-tag }}" >> $GITHUB_OUTPUT
+        run: |
+          if [ "${{ inputs.build-architecture }}" != "x64" ]; then
+            BUILD_ARCHITECTURE="-${{ inputs.build-architecture }}"
+          fi
+          echo "image=carma-builds${BUILD_ARCHITECTURE}:${{ inputs.build-image-tag }}" >> $GITHUB_OUTPUT
   git-revision-info-get:
     uses: usdot-fhwa-stol/actions/.github/workflows/git-revision-info.yml@main
   cpp-module-build:
@@ -30,14 +39,13 @@ jobs:
       - image-name-get
       - git-revision-info-get
     container:
-      image: ghcr.io/usdot-fhwa-stol/carma-builds:${{ needs.image-name-get.outputs.image }}
+      image: ghcr.io/usdot-fhwa-stol/${{ needs.image-name-get.outputs.image }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install dependencies
         run: |
           if [ -f install_dependencies.sh ]; then
-            apt-get update
             ./install_dependencies.sh
           fi # check file existence
       - name: Build
@@ -52,4 +60,5 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.aws-secret-access-key }}
           AWS_BUCKET_NAME: stol-apt-repository
         run: |
-          deb-s3 upload --codename develop --bucket ${{ env.AWS_BUCKET_NAME }} build/_packages/*.deb
+          # use build* as could be any architecture
+          deb-s3 upload --codename develop --bucket ${{ env.AWS_BUCKET_NAME }} build*/_packages/*.deb
