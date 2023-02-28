@@ -55,7 +55,7 @@ jobs:
       - name: Upload deb artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: deb-packages
+          name: deb-packages-${{ inputs.build-architecture }}
           path: build*/_packages/*.deb
 
   deb-s3-upload:
@@ -68,7 +68,7 @@ jobs:
       - name: Download deb artifacts
         uses: actions/download-artifact@v3
         with:
-          name: deb-packages
+          name: deb-packages-${{ inputs.build-architecture }}
       - name: Upload .deb files
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.aws-access-key-id }}
