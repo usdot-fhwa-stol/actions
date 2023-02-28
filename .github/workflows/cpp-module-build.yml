@@ -76,5 +76,5 @@ jobs:
           AWS_BUCKET_NAME: stol-apt-repository
         run: |
           # use build* as could be any architecture
-          ls *
-          deb-s3 upload --codename develop --bucket ${{ env.AWS_BUCKET_NAME }} deb-packages/build*/*.deb
+          find .
+          deb-s3 upload --codename develop --bucket ${{ env.AWS_BUCKET_NAME }} build*/_packages/*.deb
