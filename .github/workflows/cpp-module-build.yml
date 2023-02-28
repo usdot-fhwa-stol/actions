@@ -53,7 +53,7 @@ jobs:
         with:
           package-version-suffix: ${{ needs.git-revision-info-get.outputs.git-revision-info }}
       - name: Setup deb-s3
-        uses: usdot-fhwa-stol/actions/setup-deb-s3@support_arm_builds
+        uses: usdot-fhwa-stol/actions/setup-deb-s3@main
       - name: Upload .deb files
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.aws-access-key-id }}
