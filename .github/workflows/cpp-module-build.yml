@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       build-architecture:
-        description: 'Build architecture, defaults x64, supported: armhf'
+        description: 'Build architecture, defaults x64, see the carma-builds project for supported architectures'
         required: false
         type: string
         default: 'x64'
