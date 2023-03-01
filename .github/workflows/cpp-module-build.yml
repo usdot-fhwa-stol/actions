@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       build-architecture:
-        description: 'Build architecture, defaults x64, supported: arm'
+        description: 'Build architecture, defaults x64, supported: armhf'
         required: false
         type: string
         default: 'x64'
@@ -27,9 +27,7 @@ jobs:
     steps:
       - id: set_image
         run: |
-          if [ "${{ inputs.build-architecture }}" != "x64" ]; then
-            BUILD_ARCHITECTURE="-${{ inputs.build-architecture }}"
-          fi
+          BUILD_ARCHITECTURE="-${{ inputs.build-architecture }}"
           echo "image=carma-builds${BUILD_ARCHITECTURE}:${{ inputs.build-image-tag }}" >> $GITHUB_OUTPUT
   git-revision-info-get:
     uses: usdot-fhwa-stol/actions/.github/workflows/git-revision-info.yml@main
