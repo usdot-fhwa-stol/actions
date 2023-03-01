@@ -63,7 +63,7 @@ jobs:
     needs:
       - cpp-module-build
     container:
-      image: ghcr.io/usdot-fhwa-stol/actions-deb-s3:deb-s3-docker
+      image: ghcr.io/usdot-fhwa-stol/actions-deb-s3:main
     steps:
       - name: Download deb artifacts
         uses: actions/download-artifact@v3
