@@ -21,18 +21,17 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    steps:
-      - name: Download deb artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ inputs.artifact-name }}
-          path: deb-packages
-      - name: Upload .deb files
-        env:
-          AWS_ACCESS_KEY_ID: ${{ inputs.aws-access-key-id }}
-          AWS_SECRET_ACCESS_KEY: ${{ inputs.aws-secret-access-key }}
-          AWS_BUCKET_NAME: ${{ inputs.aws-bucket-name }}
-        run: |
+    - name: Download deb artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: deb-packages
+    - name: Upload .deb files
+      env:
+        AWS_ACCESS_KEY_ID: ${{ inputs.aws-access-key-id }}
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws-secret-access-key }}
+        AWS_BUCKET_NAME: ${{ inputs.aws-bucket-name }}
+      run: |
 # added as debug, TODO remove later
-          find deb-packages
-          find deb-packages -name "*.deb" -print0 | xargs -r0 deb-s3 upload --origin=${{ env.AWS_BUCKET_NAME }} --codename ${{ inputs.codename }} --bucket ${{ env.AWS_BUCKET_NAME }}
+        find deb-packages
+        find deb-packages -name "*.deb" -print0 | xargs -r0 deb-s3 upload --origin=${{ env.AWS_BUCKET_NAME }} --codename ${{ inputs.codename }} --bucket ${{ env.AWS_BUCKET_NAME }}
