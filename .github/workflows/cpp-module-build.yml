@@ -63,16 +63,9 @@ jobs:
     container:
       image: ghcr.io/usdot-fhwa-stol/actions-deb-s3:main
     steps:
-      - name: Download deb artifacts
-        uses: actions/download-artifact@v3
+      - name: Publish deb artifacts
+        uses: usdot-fhwa-stol/actions/deb-s3-upload@main
         with:
-          name: deb-packages-${{ inputs.build-architecture }}
-      - name: Upload .deb files
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.aws-access-key-id }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.aws-secret-access-key }}
-          AWS_BUCKET_NAME: stol-apt-repository
-        run: |
-          # use build* as could be any architecture
-          find .
-          deb-s3 upload --codename develop --bucket ${{ env.AWS_BUCKET_NAME }} build*/_packages/*.deb
+          artifact-name: deb-packages-${{ inputs.build-architecture }}
+          aws-access-key-id: ${{ secrets.aws-access-key-id }}
+          aws-secret-access-key: ${{ secrets.aws-secret-access-key }}

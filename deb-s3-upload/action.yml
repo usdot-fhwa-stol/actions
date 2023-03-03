@@ -1,0 +1,36 @@
+name: 'Debian S3 Upload'
+description: 'Upload any debian packages to the S3 repo based on a passed in artifact name. Assumes deb-s3 is available'
+inputs:
+  artifact-name:
+    description: 'Artifact name containing debian packages'
+    required: true
+  codename:
+    description: 'Code name of the repository for upload'
+    required: false
+    default: 'develop'
+  aws-access-key-id:
+    description: 'AWS access key id'
+    required: true
+  aws-secret-access-key:
+    description: 'AWS secret access key'
+    required: true
+  aws-bucket-name:
+    description: 'AWS bucket name, defaults to stol-apt-repository'
+    default: 'stol-apt-repository'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Download deb artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: deb-packages
+    - name: Upload .deb files
+      env:
+        AWS_ACCESS_KEY_ID: ${{ inputs.aws-access-key-id }}
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws-secret-access-key }}
+        AWS_BUCKET_NAME: ${{ inputs.aws-bucket-name }}
+      shell: bash
+      run: |
+        find deb-packages -name "*.deb" -print0 | xargs -0 deb-s3 upload --origin=${{ env.AWS_BUCKET_NAME }} --codename ${{ inputs.codename }} --bucket ${{ env.AWS_BUCKET_NAME }}
