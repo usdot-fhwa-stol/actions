@@ -64,7 +64,7 @@ jobs:
       image: ghcr.io/usdot-fhwa-stol/actions-deb-s3:main
     steps:
       - name: Publish deb artifacts
-        uses: usdot-fhwa-stol/actions/deb-s3-upload@deb-s3-upload
+        uses: usdot-fhwa-stol/actions/deb-s3-upload@main
         with:
           artifact-name: deb-packages-${{ inputs.build-architecture }}
           aws-access-key-id: ${{ secrets.aws-access-key-id }}

@@ -1,4 +1,4 @@
-name: 'Debian S3 Upload]'
+name: 'Debian S3 Upload'
 description: 'Upload any debian packages to the S3 repo based on a passed in artifact name. Assumes deb-s3 is available'
 inputs:
   artifact-name:
