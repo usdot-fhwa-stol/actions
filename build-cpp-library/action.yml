@@ -4,6 +4,9 @@ inputs:
   build-options:
     description: 'Options to pass to the build script'
     required: false
+  working-folder:
+    description: 'Working folder to build in'
+    required: false
   build-wrapper:
     description: 'Build wrapper for the build script'
     required: false
@@ -16,6 +19,9 @@ runs:
     - name: Run build script
       shell: bash
       run: |
+        if [ ! -z "${{ inputs.working-folder }}" ]; then
+          cd ${{ inputs.working-folder }}
+        fi
         if [ -f build.sh ]; then
           if [ ! -z "${{ inputs.package-version-suffix }}" ]; then
             PACKAGE_VERSION_SUFFIX_ARG="-s ${{ inputs.package-version-suffix }}"

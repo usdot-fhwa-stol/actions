@@ -4,44 +4,15 @@ on:
   push:
 
 jobs:
-  test-upload:
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/usdot-fhwa-stol/actions-deb-s3:main
-    steps:
-      - name: Publish deb artifacts
-        uses: usdot-fhwa-stol/actions/deb-s3-upload@repo_codename_setup
-        with:
-          artifact-name: deb-packages-test
-          aws-access-key-id: ${{ secrets.APT_REPO_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.APT_REPO_AWS_SECRET_ACCESS_KEY }}
-
-  stol-actions:
-    runs-on: ubuntu-latest
-    container:
-      image: usdotfhwastoldev/carma-base:develop
-      options: --user root
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Add STOL apt repository
-        uses: ./add-stol-apt-repository/
-        with:
-          codename: "develop"
-      - name: Install something
-        run: |
-          if [ "$(id --user)" -eq "0" ]; then
-            sudocmd=""
-          else
-            sudocmd="sudo"
-          fi
-          
-          $sudocmd apt-get -y install carma-j2735-msgs
-      - name: Install deb-s3 selftest
-        uses: ./setup-deb-s3/
-        with:
-          bloom: "true"
-          mk-build-deps: "true"
-      - name: Test deb-s3 install
-        run: |
-          deb-s3 help
+  test-build-and-upload:
+  build-package:
+    strategy:
+      matrix:
+        architecture: [x64, armhf, arm64]
+    uses: usdot-fhwa-stol/actions/.github/workflows/cpp-module-build.yml@repo_codename_setup
+    with:
+      build-architecture: ${{ matrix.architecture }}
+      working-folder: tests/cpp_project
+    secrets:
+      aws-access-key-id: ${{ secrets.APT_REPO_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.APT_REPO_AWS_SECRET_ACCESS_KEY }}
