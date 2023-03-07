@@ -13,9 +13,9 @@ if [[ ${GITHUB_REF_NAME} =~ feature/.* ]]; then
 elif [[ ${GITHUB_REF_NAME} =~ release/.* ]]; then
     APT_CODENAME=candidate-${NO_UNDERSCORE_NAME##*/}
 
-# check for release branches
-elif [[ $RELEASE_BRANCHES =~ (^|[[:space:]])${GITHUB_REF_NAME}($|[[:space:]]) ]]; then
-    APT_CODENAME=release-${NO_UNDERSCORE_NAME##*/}
+# check for release tags
+elif [[ $GITHUB_REF_TYPE = tag ]]; then
+    APT_CODENAME=stable
 
 # check for develop branches
 elif [[ $DEVELOP_BRANCHES =~ (^|[[:space:]])${GITHUB_REF_NAME}($|[[:space:]]) ]]; then
