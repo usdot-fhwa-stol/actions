@@ -10,7 +10,7 @@ jobs:
       image: ghcr.io/usdot-fhwa-stol/actions-deb-s3:main
     steps:
       - name: Publish deb artifacts
-        uses: usdot-fhwa-stol/actions/deb-s3-upload@repo_codename_setup
+        uses: usdot-fhwa-stol/actions/deb-s3-upload@feature/test_codename
         with:
           artifact-name: deb-packages-test
           aws-access-key-id: ${{ secrets.APT_REPO_AWS_ACCESS_KEY_ID }}
