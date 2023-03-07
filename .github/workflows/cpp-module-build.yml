@@ -59,7 +59,9 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: deb-packages-${{ inputs.build-architecture }}
-          path: build*/_packages/*.deb
+          path: |
+            build*/_packages/*.deb
+            ${{ inputs.working-folder }}/build*/_packages/*.deb
 
   deb-s3-upload:
     runs-on: ubuntu-latest
