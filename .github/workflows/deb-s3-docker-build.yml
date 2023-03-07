@@ -2,6 +2,8 @@ name: Docker Deb S3 Build
 
 on:
   pull_request:
+    paths:
+    - setup-deb-s3
   push:
     paths:
     - setup-deb-s3
