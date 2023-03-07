@@ -37,5 +37,5 @@ runs:
         AWS_BUCKET_NAME: ${{ inputs.aws-bucket-name }}
       shell: bash
       run: |
-        echo $(${GITHUB_ACTION_PATH}/determine_codename.sh)
+        CODENAME=$(${GITHUB_ACTION_PATH}/determine_codename.sh)
         find deb-packages -name "*.deb" -print0 | xargs -0 deb-s3 upload --origin=${{ env.AWS_BUCKET_NAME }} --codename ${{ inputs.codename }} --bucket ${{ env.AWS_BUCKET_NAME }}
