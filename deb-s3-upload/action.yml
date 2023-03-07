@@ -17,10 +17,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Check codename
-      shell: bash
-      run: |
-        echo $(${GITHUB_ACTION_PATH}/determine_codename.sh)
     - name: Download deb artifacts
       uses: actions/download-artifact@v3
       with:
@@ -34,4 +30,5 @@ runs:
       shell: bash
       run: |
         CODENAME=$(${GITHUB_ACTION_PATH}/determine_codename.sh)
+        echo "Using CODENAME: $CODENAME"
         find deb-packages -name "*.deb" -print0 | xargs -0 deb-s3 upload --origin=${{ env.AWS_BUCKET_NAME }} --codename ${CODENAME} --bucket ${{ env.AWS_BUCKET_NAME }}
