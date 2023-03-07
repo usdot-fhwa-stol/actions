@@ -4,6 +4,18 @@ on:
   push:
 
 jobs:
+  test-upload:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/usdot-fhwa-stol/actions-deb-s3:main
+    steps:
+      - name: Publish deb artifacts
+        uses: usdot-fhwa-stol/actions/deb-s3-upload@main
+        with:
+          artifact-name: deb-packages-test
+          aws-access-key-id: ${{ secrets.APT_REPO_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.APT_REPO_AWS_SECRET_ACCESS_KEY }}
+
   stol-actions:
     runs-on: ubuntu-latest
     container:
