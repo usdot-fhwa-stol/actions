@@ -15,6 +15,7 @@ on:
         default: 'latest'
       working-folder:
         description: 'Working folder to build in'
+        type: string
         required: false
     secrets:
       aws-access-key-id:
