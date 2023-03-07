@@ -20,8 +20,11 @@ runs:
       shell: bash
       run: |
         if [ ! -z "${{ inputs.working-folder }}" ]; then
+          echo "Using working folder ${{ inputs.working-folder }}"
           cd ${{ inputs.working-folder }}
         fi
+        pwd
+        ls
         if [ -f build.sh ]; then
           if [ ! -z "${{ inputs.package-version-suffix }}" ]; then
             PACKAGE_VERSION_SUFFIX_ARG="-s ${{ inputs.package-version-suffix }}"
