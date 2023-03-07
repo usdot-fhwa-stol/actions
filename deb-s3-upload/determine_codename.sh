@@ -2,7 +2,6 @@
 
 # use dashes instead of underscores in our repo code names
 NO_UNDERSCORE_NAME=${GITHUB_REF_NAME/_/-}
-RELEASE_BRANCHES="carma-master master"
 DEVELOP_BRANCHES="carma-develop develop"
 
 # check for feature branches

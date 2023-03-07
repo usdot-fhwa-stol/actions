@@ -3,7 +3,8 @@ name: Docker Deb S3 Build
 on:
   pull_request:
   push:
-
+    paths:
+    - setup-deb-s3
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
