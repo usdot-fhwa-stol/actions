@@ -14,8 +14,7 @@ elif [[ ${GITHUB_REF_NAME} =~ release/.* ]]; then
 
 # check for release tags
 elif [[ $GITHUB_REF_TYPE = tag ]]; then
-    # only one repo for stable packages
-    APT_CODENAME=stable
+    APT_CODENAME=release-${NO_UNDERSCORE_NAME##*/}
 
 # check for develop branches
 elif [[ $DEVELOP_BRANCHES =~ (^|[[:space:]])${GITHUB_REF_NAME}($|[[:space:]]) ]]; then
