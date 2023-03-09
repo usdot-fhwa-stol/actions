@@ -68,7 +68,7 @@ jobs:
     needs:
       - cpp-module-build
     container:
-      image: ghcr.io/usdot-fhwa-stol/actions-deb-s3:main
+      image: ghcr.io/usdot-fhwa-stol/actions-deb-s3:fix_underscore
     steps:
       - name: Publish deb artifacts
         uses: usdot-fhwa-stol/actions/deb-s3-upload@main
