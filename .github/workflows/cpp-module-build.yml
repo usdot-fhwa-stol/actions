@@ -51,7 +51,7 @@ jobs:
             ./install_dependencies.sh
           fi # check file existence
       - name: Build
-        uses: usdot-fhwa-stol/actions/build-cpp-library@repo_codename_setup
+        uses: usdot-fhwa-stol/actions/build-cpp-library@main
         with:
           package-version-suffix: ${{ needs.git-revision-info-get.outputs.git-revision-info }}
           working-folder: ${{ inputs.working-folder }}
@@ -71,7 +71,7 @@ jobs:
       image: ghcr.io/usdot-fhwa-stol/actions-deb-s3:main
     steps:
       - name: Publish deb artifacts
-        uses: usdot-fhwa-stol/actions/deb-s3-upload@repo_codename_setup
+        uses: usdot-fhwa-stol/actions/deb-s3-upload@main
         with:
           artifact-name: deb-packages-${{ inputs.build-architecture }}
           aws-access-key-id: ${{ secrets.aws-access-key-id }}
