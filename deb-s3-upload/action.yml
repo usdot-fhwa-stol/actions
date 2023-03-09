@@ -4,10 +4,6 @@ inputs:
   artifact-name:
     description: 'Artifact name containing debian packages'
     required: true
-  codename:
-    description: 'Code name of the repository for upload'
-    required: false
-    default: 'develop'
   aws-access-key-id:
     description: 'AWS access key id'
     required: true
@@ -33,4 +29,6 @@ runs:
         AWS_BUCKET_NAME: ${{ inputs.aws-bucket-name }}
       shell: bash
       run: |
-        find deb-packages -name "*.deb" -print0 | xargs -0 deb-s3 upload --origin=${{ env.AWS_BUCKET_NAME }} --codename ${{ inputs.codename }} --bucket ${{ env.AWS_BUCKET_NAME }}
+        CODENAME=$(${GITHUB_ACTION_PATH}/determine_codename.sh)
+        echo "Using CODENAME: $CODENAME"
+        find deb-packages -name "*.deb" -print0 | xargs -0 deb-s3 upload --origin=${{ env.AWS_BUCKET_NAME }} --codename ${CODENAME} --bucket ${{ env.AWS_BUCKET_NAME }}

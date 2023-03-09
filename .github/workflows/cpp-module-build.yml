@@ -13,6 +13,10 @@ on:
         required: false
         type: string
         default: 'latest'
+      working-folder:
+        description: 'Working folder to build in'
+        type: string
+        required: false
     secrets:
       aws-access-key-id:
         required: true
@@ -50,11 +54,14 @@ jobs:
         uses: usdot-fhwa-stol/actions/build-cpp-library@main
         with:
           package-version-suffix: ${{ needs.git-revision-info-get.outputs.git-revision-info }}
+          working-folder: ${{ inputs.working-folder }}
       - name: Upload deb artifacts
         uses: actions/upload-artifact@v3
         with:
           name: deb-packages-${{ inputs.build-architecture }}
-          path: build*/_packages/*.deb
+          path: |
+            build*/_packages/*.deb
+            ${{ inputs.working-folder }}/build*/_packages/*.deb
 
   deb-s3-upload:
     runs-on: ubuntu-latest
