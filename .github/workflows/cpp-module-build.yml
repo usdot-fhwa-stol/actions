@@ -68,10 +68,10 @@ jobs:
     needs:
       - cpp-module-build
     container:
-      image: ghcr.io/usdot-fhwa-stol/actions-deb-s3:fix_underscore
+      image: ghcr.io/usdot-fhwa-stol/actions-deb-s3:main
     steps:
       - name: Publish deb artifacts
-        uses: usdot-fhwa-stol/actions/deb-s3-upload@main
+        uses: usdot-fhwa-stol/actions/deb-s3-upload@fix_underscore
         with:
           artifact-name: deb-packages-${{ inputs.build-architecture }}
           aws-access-key-id: ${{ secrets.aws-access-key-id }}
