@@ -13,6 +13,10 @@ inputs:
   aws-bucket-name:
     description: 'AWS bucket name, defaults to stol-apt-repository'
     default: 'stol-apt-repository'
+  bucket-codename:
+    description: 'Bucket codename, defaults to null, which will determine the codename using determine_codename.sh'
+    required: false
+    default: ''
 
 runs:
   using: 'composite'
@@ -29,6 +33,10 @@ runs:
         AWS_BUCKET_NAME: ${{ inputs.aws-bucket-name }}
       shell: bash
       run: |
-        CODENAME=$(${GITHUB_ACTION_PATH}/determine_codename.sh)
+        if [ -z "${{ inputs.bucket-codename }}" ]; then
+          CODENAME=$(${GITHUB_ACTION_PATH}/determine_codename.sh)
+        else
+          CODENAME=${{ inputs.bucket-codename }}
+        fi
         echo "Using CODENAME: $CODENAME"
         find deb-packages -name "*.deb" -print0 | xargs -0 deb-s3 upload --origin=${{ env.AWS_BUCKET_NAME }} --codename ${CODENAME} --bucket ${{ env.AWS_BUCKET_NAME }}
