@@ -7,12 +7,17 @@ on:
         required: true
       aws-secret-access-key:
         required: true
+    inputs:
+      ubuntu-codename:
+        description: 'Ubuntu codename to use for the build. Default is "focal".'
+        required: false
+        default: 'focal'
 
 jobs:
   cpp-module-build:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/usdot-fhwa-stol/carma-builds:latest
+      image: ghcr.io/usdot-fhwa-stol/carma-builds:{{ inputs.ubuntu-codename }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
