@@ -44,7 +44,7 @@ runs:
         fi
 
         if [ "${{ github.event_name }}" == "pull_request" ]; then
-          sonar-scanner -Dproject.settings="${{ inputs.sonar-properties-path }}" -Dsonar.login="${{ inputs.sonar-token }}" -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }} -Dsonar.pullrequest.branch=${{ github.ref }} -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
+          sonar-scanner -X -Dproject.settings="${{ inputs.sonar-properties-path }}" -Dsonar.login="${{ inputs.sonar-token }}" -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }} -Dsonar.pullrequest.branch=${{ github.ref }} -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
         else
-          sonar-scanner -Dproject.settings="${{ inputs.sonar-properties-path }}" -Dsonar.login="${{ inputs.sonar-token }}"
+          sonar-scanner -X -Dproject.settings="${{ inputs.sonar-properties-path }}" -Dsonar.login="${{ inputs.sonar-token }}"
         fi
