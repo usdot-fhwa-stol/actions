@@ -3,6 +3,10 @@ name: C++ Module Build workflow
 on:
   workflow_call:
     inputs:
+      build:
+        description: 'Run a build'
+        required: true
+        type: boolean
       build-architecture:
         description: 'Build architecture, defaults x64, see the carma-builds project for supported architectures'
         required: false
@@ -30,6 +34,7 @@ on:
 
 jobs:
   image-name-get:
+    if: ${{ inputs.build }}
     runs-on: ubuntu-latest
     outputs:
       image: ${{ steps.set_image.outputs.image }}
@@ -39,8 +44,10 @@ jobs:
           BUILD_ARCHITECTURE="-${{ inputs.build-architecture }}"
           echo "image=carma-builds${BUILD_ARCHITECTURE}:${{ inputs.build-image-tag }}" >> $GITHUB_OUTPUT
   git-revision-info-get:
+    if: ${{ inputs.build }}
     uses: usdot-fhwa-stol/actions/.github/workflows/git-revision-info.yml@main
   cpp-module-build:
+    if: ${{ inputs.build }}
     runs-on: ubuntu-latest
     needs:
       - image-name-get
@@ -69,6 +76,7 @@ jobs:
             ${{ inputs.working-folder }}/build*/_packages/*.deb
 
   deb-s3-upload:
+    if: ${{ inputs.build }}
     runs-on: ubuntu-latest
     needs:
       - cpp-module-build
@@ -81,4 +89,4 @@ jobs:
           artifact-name: deb-packages-${{ inputs.build-architecture }}
           aws-access-key-id: ${{ secrets.aws-access-key-id }}
           aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
-          bucket-codename: ${{ inputs.ubuntu-codename }}
+          bucket-codename: ${{ inputs.bucket-codename }}
