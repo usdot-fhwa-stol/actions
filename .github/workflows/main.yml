@@ -10,6 +10,7 @@ jobs:
         architecture: [x64, armhf, arm64]
     uses: usdot-fhwa-stol/actions/.github/workflows/cpp-module-build.yml@main
     with:
+      build: true
       build-architecture: ${{ matrix.architecture }}
       working-folder: tests/cpp_project
     secrets:
