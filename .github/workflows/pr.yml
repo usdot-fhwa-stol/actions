@@ -1,0 +1,42 @@
+name: New GitHub PR Jira integration
+
+on:
+  workflow_call:
+    secrets:
+      DEVOPS_GITHUB_TOKEN:
+        required: true
+      GITHUB_REPOSITORY:
+        required: true
+      JIRA_EMAIL:
+        required: true
+      JIRA_TOKEN:
+        required: true
+
+jobs:
+  jira2github:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+          repository: "usdot-fhwa-stol/devops"
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          python -m pip install -r jira2github_requirements.txt
+
+      - name: Run jira2github.py
+        run: |
+          ./jira2github.py \
+            --github-pr-number "${{ github.event.pull_request.number }}" \
+            --github-repo ${{ secrets.GITHUB_REPOSITORY }} \
+            --github-token "${{ secrets.DEVOPS_GITHUB_TOKEN }}" \
+            --jira-email "${{ secrets.JIRA_EMAIL }}" \
+            --jira-server "$JIRA_URL" \
+            --jira-token "${{ secrets.JIRA_TOKEN }}"
