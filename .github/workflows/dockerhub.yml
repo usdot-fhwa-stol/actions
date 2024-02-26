@@ -7,6 +7,8 @@ on:
         required: true
       DOCKERHUB_TOKEN:
         required: true
+      GH_PAT: 
+        required: false  
 
 jobs:
   docker:

@@ -2,6 +2,9 @@ name: Docker Build
 
 on:
   workflow_call:
+    secrets:
+      GH_PAT:
+        required: false
 
 jobs:
   docker:
