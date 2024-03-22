@@ -75,5 +75,5 @@ jobs:
           push: true
           tags: ${{ env.DOCKERHUB_ORG }}/${{ github.event.repository.name }}:${{ env.DOCKERHUB_TAG }}
           build-args: TOKEN=${{ secrets.GH_PAT }}
-          build-contexts: ${{ inputs.context }}
+          context: ${{ inputs.context }}
           file: ${{ inputs.file }}
