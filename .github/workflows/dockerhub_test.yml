@@ -2,7 +2,7 @@ name: Testing Action for dockerhub
 on: [push]
 jobs:
     dockerhub:
-      uses: usdot-fhwa-stol/actions/.github/workflows/dockerhub.yml@main
+      uses: usdot-fhwa-stol/actions/.github/workflows/dockerhub.yml@arc-68-argument-workflow
       secrets:
         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
