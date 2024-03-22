@@ -12,12 +12,12 @@ on:
     inputs:
       context:
         description: "Optional: List of Additional Build Contexts"
-        default: "name=path"
+        default: "."
         type: "string"
         required: false
       file:
         description: "Optional: Path to Dockerfile"
-        default: "{context}/Dockerfile"
+        default: "${{context}}/Dockerfile"
         type: "string"
         required: false
 
