@@ -17,7 +17,6 @@ on:
         required: false
       file:
         description: "Optional: Path to Dockerfile"
-        default: ${{ inputs.context }}/Dockerfile
         type: "string"
         required: false
 
