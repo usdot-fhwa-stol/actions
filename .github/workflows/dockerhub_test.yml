@@ -8,3 +8,4 @@ jobs:
         DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
       with:
         context: different_context/
+        file: different_context/Dockerfile_not
