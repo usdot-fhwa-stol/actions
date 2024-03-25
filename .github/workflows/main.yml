@@ -22,6 +22,6 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     with:
-      context: test/docker
-      file: test/docker/Dockerfile_not
+      context: tests/docker
+      file: tests/docker/Dockerfile_not
 
