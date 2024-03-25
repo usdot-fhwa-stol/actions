@@ -8,7 +8,16 @@ on:
       DOCKERHUB_TOKEN:
         required: true
       GH_PAT: 
-        required: false  
+        required: false
+    inputs:
+      context:
+        description: "Optional: List of Additional Build Contexts"
+        type: "string"
+        required: false
+      file:
+        description: "Optional: Path to Dockerfile"
+        type: "string"
+        required: false
 
 jobs:
   docker:
@@ -64,3 +73,5 @@ jobs:
           push: true
           tags: ${{ env.DOCKERHUB_ORG }}/${{ github.event.repository.name }}:${{ env.DOCKERHUB_TAG }}
           build-args: TOKEN=${{ secrets.GH_PAT }}
+          context: ${{ inputs.context }}
+          file: ${{ inputs.file }}

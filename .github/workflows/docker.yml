@@ -5,6 +5,15 @@ on:
     secrets:
       GH_PAT:
         required: false
+    inputs:
+      context:
+        description: "Optional: List of Additional Build Contexts"
+        type: "string"
+        required: false
+      file:
+        description: "Optional: Path to Dockerfile"
+        type: "string"
+        required: false
 
 jobs:
   docker:
@@ -16,3 +25,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
       - name: Build
         uses: docker/build-push-action@v4
+        with:
+          push: true
+          context: ${{ inputs.context }}
+          file: ${{ inputs.file }}
