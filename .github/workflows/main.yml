@@ -8,8 +8,6 @@ on:
         required: true
       DOCKERHUB_TOKEN:
         required: true
-   
-
 jobs:
   test-build-and-upload:
     strategy:
@@ -32,7 +30,7 @@ jobs:
       context: tests/docker/
       file: tests/docker/Dockerfile_not
   test-docker:
-    uses: usdot-fhwa-stol/actions/.github/workflows/docker.yml@fix-docker-action-1
+    uses: usdot-fhwa-stol/actions/.github/workflows/docker.yml@main
     with:
       context: tests/docker/
       file: tests/docker/Dockerfile_not
