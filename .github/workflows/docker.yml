@@ -26,6 +26,5 @@ jobs:
       - name: Build
         uses: docker/build-push-action@v4
         with:
-          push: true
           context: ${{ inputs.context }}
           file: ${{ inputs.file }}
