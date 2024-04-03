@@ -33,9 +33,6 @@ jobs:
       file: tests/docker/Dockerfile_not
   test-docker:
     uses: usdot-fhwa-stol/actions/.github/workflows/docker.yml@fix-docker-action-1
-    secrets:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     with:
       context: tests/docker/
       file: tests/docker/Dockerfile_not
