@@ -81,7 +81,7 @@ jobs:
           context: ${{ inputs.context }}
           file: ${{ inputs.file }}
       - name: Build (Custom Repository)
-        if: ${{ !inputs.repository }}
+        if: ${{ inputs.repository }}
         uses: docker/build-push-action@v5
         with:
           push: true
