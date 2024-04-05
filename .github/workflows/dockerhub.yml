@@ -26,6 +26,9 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest-16-cores
+    outputs:
+      DOCKERHUB_TAG: ${{ steps.docker_org_git_tag.outputs.DOCKERHUB_TAG}}
+      DOCKERHUB_ORG: ${{ steps.docker_org_git_tag.outputs.DOCKERHUB_ORG}}
     defaults:
       run:
         shell: bash
@@ -55,20 +58,22 @@ jobs:
               echo GIT_TAG="$GIT_TAG" >> $GITHUB_ENV
           fi
       - name: Determine Docker Hub org and tag from git branch
+        id: docker_org_git_tag
         run: |
           if [[ "$GITHUB_REF_NAME" =~ release/(.*) ]]; then
-              echo DOCKERHUB_ORG="usdotfhwastolcandidate" >> $GITHUB_ENV
-              echo DOCKERHUB_TAG="${BASH_REMATCH[1]}" >> $GITHUB_ENV
+              echo DOCKERHUB_ORG="usdotfhwastolcandidate" >> $GITHUB_OUTPUT
+              echo DOCKERHUB_TAG="${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
+              
           elif [ "$GITHUB_REF_NAME" == "carma-master" ] || [ "$GITHUB_REF_NAME" == "master" ]; then
-              echo DOCKERHUB_ORG="usdotfhwastol" >> $GITHUB_ENV
-              echo DOCKERHUB_TAG="$GIT_TAG" >> $GITHUB_ENV
+              echo DOCKERHUB_ORG="usdotfhwastol" >> $GITHUB_OUTPUT
+              echo DOCKERHUB_TAG="$GIT_TAG" >> $GITHUB_OUTPUT
           else
-              echo DOCKERHUB_ORG="usdotfhwastoldev" >> $GITHUB_ENV
+              echo DOCKERHUB_ORG="usdotfhwastoldev" >> $GITHUB_OUTPUT
               if [ "$GITHUB_REF_NAME" == "carma-develop" ]; then
-                  echo DOCKERHUB_TAG="develop" >> $GITHUB_ENV
+                  echo DOCKERHUB_TAG="develop" >> $GITHUB_OUTPUT
               else
                   # Replace / with - in branch name
-                  echo DOCKERHUB_TAG=${GITHUB_REF_NAME/\//-} >> $GITHUB_ENV
+                  echo DOCKERHUB_TAG=${GITHUB_REF_NAME/\//-} >> $GITHUB_OUTPUT
               fi
           fi
       - name: Build (Default Repository)
@@ -76,7 +81,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ${{ env.DOCKERHUB_ORG }}/${{ github.event.repository.name }}:${{ env.DOCKERHUB_TAG }}
+          tags: ${{ steps.docker_org_git_tag.outputs.DOCKERHUB_ORG }}/${{ github.event.repository.name }}:${{ steps.docker_org_git_tag.outputs.DOCKERHUB_TAG }}
           build-args: TOKEN=${{ secrets.GH_PAT }}
           context: ${{ inputs.context }}
           file: ${{ inputs.file }}
@@ -85,7 +90,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ${{ env.DOCKERHUB_ORG }}/${{ inputs.repository }}:${{ env.DOCKERHUB_TAG }}
+          tags: ${{ steps.docker_org_git_tag.outputs.DOCKERHUB_ORG }}/${{ inputs.repository }}:${{ steps.docker_org_git_tag.outputs.DOCKERHUB_TAG }}
           build-args: TOKEN=${{ secrets.GH_PAT }}
           context: ${{ inputs.context }}
           file: ${{ inputs.file }}
