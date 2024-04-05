@@ -16,7 +16,7 @@ jobs:
       aws-access-key-id: ${{ secrets.APT_REPO_AWS_ACCESS_KEY_ID }}
       aws-secret-access-key: ${{ secrets.APT_REPO_AWS_SECRET_ACCESS_KEY }}
   test-dockerhub:
-    uses: usdot-fhwa-stol/actions/.github/workflows/dockerhub.yml@feature/add-repository-dockerhub-action
+    uses: usdot-fhwa-stol/actions/.github/workflows/dockerhub.yml@feature-add-repository-dockerhub-action
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
