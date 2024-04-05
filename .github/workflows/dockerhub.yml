@@ -18,6 +18,10 @@ on:
         description: "Optional: Path to Dockerfile"
         type: "string"
         required: false
+      repository:
+        description: "Optional: DockerHub repository name. (If unspecified will assume branch name)"
+        type: "string"
+        required: false
 
 jobs:
   docker:
@@ -67,11 +71,22 @@ jobs:
                   echo DOCKERHUB_TAG=${GITHUB_REF_NAME/\//-} >> $GITHUB_ENV
               fi
           fi
-      - name: Build
-        uses: docker/build-push-action@v4
+      - name: Build (Default Repository)
+        if: ${{ !inputs.repository }}
+        uses: docker/build-push-action@v5
         with:
           push: true
           tags: ${{ env.DOCKERHUB_ORG }}/${{ github.event.repository.name }}:${{ env.DOCKERHUB_TAG }}
           build-args: TOKEN=${{ secrets.GH_PAT }}
           context: ${{ inputs.context }}
           file: ${{ inputs.file }}
+      - name: Build (Custom Repository)
+        if: ${{ !inputs.repository }}
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: ${{ env.DOCKERHUB_ORG }}/${{ inputs.repository }}:${{ env.DOCKERHUB_TAG }}
+          build-args: TOKEN=${{ secrets.GH_PAT }}
+          context: ${{ inputs.context }}
+          file: ${{ inputs.file }}
+
