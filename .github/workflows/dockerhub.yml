@@ -38,7 +38,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Determine master git tag
-        if: github.ref == 'refs/heads/carma-master' || github.ref == 'refs/heads/master' || contains(github.ref, 'carma-system-')
+        if: github.ref == 'refs/heads/carma-master' || github.ref == 'refs/heads/master' || contains(github.ref, 'tag/carma-system-')
         run: |
           GIT_TAG="$(git tag --points-at HEAD)"
           if [ -z "$GIT_TAG" ]; then
