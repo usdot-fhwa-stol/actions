@@ -38,7 +38,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Determine master git tag
-        if: github.ref == 'refs/heads/carma-master' || github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/carma-master' || github.ref == 'refs/heads/master' || contains(github.ref, 'tags/carma-system-')
         run: |
           GIT_TAG="$(git tag --points-at HEAD)"
           if [ -z "$GIT_TAG" ]; then
@@ -55,7 +55,7 @@ jobs:
           if [[ "$GITHUB_REF_NAME" =~ release/(.*) ]]; then
               echo DOCKERHUB_ORG="usdotfhwastolcandidate" >> $GITHUB_ENV
               echo DOCKERHUB_TAG="${BASH_REMATCH[1]}" >> $GITHUB_ENV
-          elif [ "$GITHUB_REF_NAME" == "carma-master" ] || [ "$GITHUB_REF_NAME" == "master" ] || [ "$GITHUB_REF_NAME" =~ "carma-system-(.*)" ]; then
+          elif [ "$GITHUB_REF_NAME" == "carma-master" ] || [ "$GITHUB_REF_NAME" == "master" ] || [[ "$GIT_TAG" =~ carma-system-(.*) ]]; then
               echo DOCKERHUB_ORG="usdotfhwastol" >> $GITHUB_ENV
               echo DOCKERHUB_TAG="$GIT_TAG" >> $GITHUB_ENV
           else
