@@ -9,6 +9,7 @@ runs:
   using: 'composite'
   steps:
     - name: Determine git tag
+      shell: bash
       if: contains(github.ref, 'refs/tags/')
       run: |
         GIT_TAG="$(git tag --points-at HEAD)"
@@ -22,6 +23,7 @@ runs:
             echo GIT_TAG="$GIT_TAG" >> $GITHUB_ENV
         fi
     - name: Determine Docker Hub org and tag from Git Branch
+      shell: bash
       if: github.event_name != 'pull_request'
       run: |
         if [[ "$GITHUB_REF_NAME" =~ release/(.*) ]]; then
@@ -40,6 +42,7 @@ runs:
             fi
         fi
     - name: Determine Docker Hub org and tag from Pull Request
+      shell: bash
       if: github.event_name == 'pull_request'
       run: |
         if [[ "$GITHUB_HEAD_REF" =~ release/(.*) ]]; then
