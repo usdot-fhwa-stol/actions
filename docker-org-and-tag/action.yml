@@ -39,7 +39,7 @@ runs:
                 echo docker_image_tag="$GIT_TAG" >> $GITHUB_OUTPUT
             else
                 echo docker_organization="usdotfhwastoldev" >> $GITHUB_OUTPUT
-                if [ "$GITHUB_HEAD_REF" == "carma-develop" ]; then
+                if [ "$GITHUB_HEAD_REF" == "carma-develop" ] || [ "$GITHUB_HEAD_REF" == "develop" ]; then
                     echo docker_image_tag="develop" >> $GITHUB_OUTPUT
                 else
                     # Replace / with - in branch name
