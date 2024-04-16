@@ -63,3 +63,11 @@ runs:
                 fi
             fi
         fi
+    - name: Echo Docker Organization and Docker Image tag
+      id: docker-org-and-tag
+      shell: bash
+      env:
+        DOCKER_ORGANIZATION: ${{ steps.docker-org-and-tag.outputs.docker_organization }}
+        DOCKER_IMAGE: ${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
+      run: |
+        echo "Docker organization $DOCKER_ORGANIZATION and docker image tag $DOCKER_IMAGE"
