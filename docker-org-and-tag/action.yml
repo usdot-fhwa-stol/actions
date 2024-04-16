@@ -31,17 +31,22 @@ runs:
         PULL_REQUEST: ${{ github.event_name }}
       run: |
         if [[ "$PULL_REQUEST" == "pull_request" ]]; then
+            echo "Running on PR ... "
             if [[ "$GITHUB_HEAD_REF" =~ release/(.*) ]]; then
+                echo "PR against release candidate ..."
                 echo docker_organization="usdotfhwastolcandidate" >> $GITHUB_OUTPUT
                 echo docker_image_tag="${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
             elif [ "$GITHUB_HEAD_REF" == "carma-master" ] || [ "$GITHUB_HEAD_REF" == "master" ] || [[ "$GIT_TAG" != "" ]]; then
+                echo "PR against master ..."
                 echo docker_organization="usdotfhwastol" >> $GITHUB_OUTPUT
                 echo docker_image_tag="$GIT_TAG" >> $GITHUB_OUTPUT
             else
                 echo docker_organization="usdotfhwastoldev" >> $GITHUB_OUTPUT
                 if [ "$GITHUB_HEAD_REF" == "carma-develop" ] || [ "$GITHUB_HEAD_REF" == "develop" ]; then
+                    echo "PR against develop ..."
                     echo docker_image_tag="develop" >> $GITHUB_OUTPUT
                 else
+                    echo "PR against $GITHUB_HEAD_REF"
                     # Replace / with - in branch name
                     echo docker_image_tag=${GITHUB_HEAD_REF/\//-} >> $GITHUB_OUTPUT
                 fi
