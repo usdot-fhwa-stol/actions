@@ -3,8 +3,10 @@ description: 'Based on github event trigger, this action determines and outputs 
 outputs:
   docker_organization:
     description: 'Dockerhub organization for images'
+    value: ${{ steps.docker-org-and-tag.outputs.docker_organization }}
   docker_image_tag:
     description: 'Docker image tag'
+    value: ${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
 runs:
   using: 'composite'
   steps:
@@ -22,41 +24,42 @@ runs:
             echo "Found git tag $GIT_TAG"
             echo GIT_TAG="$GIT_TAG" >> $GITHUB_ENV
         fi
-    - name: Determine Docker Hub org and tag from Git Branch
+    - name: Determine Docker Hub org and tag
+      id: docker-org-and-tag
       shell: bash
-      if: github.event_name != 'pull_request'
+      env:
+        PULL_REQUEST: ${{ github.event_name }}
       run: |
-        if [[ "$GITHUB_REF_NAME" =~ release/(.*) ]]; then
-            echo docker_organization="usdotfhwastolcandidate" >> $GITHUB_OUTPUT
-            echo docker_image_tag="${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
-        elif [ "$GITHUB_REF_NAME" == "carma-master" ] || [ "$GITHUB_REF_NAME" == "master" ] || [[ "$GIT_TAG" != "" ]]; then
-            echo docker_organization="usdotfhwastol" >> $GITHUB_OUTPUT
-            echo docker_image_tag="$GIT_TAG" >> $GITHUB_OUTPUT
-        else
-            echo docker_organization="usdotfhwastoldev" >> $GITHUB_OUTPUT
-            if [ "$GITHUB_REF_NAME" == "carma-develop" ]; then
-                echo docker_image_tag="develop" >> $GITHUB_OUTPUT
+        if [[ "$PULL_REQUEST" == "pull_request" ]]; then
+            if [[ "$GITHUB_HEAD_REF" =~ release/(.*) ]]; then
+                echo docker_organization="usdotfhwastolcandidate" >> $GITHUB_OUTPUT
+                echo docker_image_tag="${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
+            elif [ "$GITHUB_HEAD_REF" == "carma-master" ] || [ "$GITHUB_HEAD_REF" == "master" ] || [[ "$GIT_TAG" != "" ]]; then
+                echo docker_organization="usdotfhwastol" >> $GITHUB_OUTPUT
+                echo docker_image_tag="$GIT_TAG" >> $GITHUB_OUTPUT
             else
-                # Replace / with - in branch name
-                echo docker_image_tag=${GITHUB_REF_NAME/\//-} >> $GITHUB_OUTPUT
+                echo docker_organization="usdotfhwastoldev" >> $GITHUB_OUTPUT
+                if [ "$GITHUB_HEAD_REF" == "carma-develop" ]; then
+                    echo docker_image_tag="develop" >> $GITHUB_OUTPUT
+                else
+                    # Replace / with - in branch name
+                    echo docker_image_tag=${GITHUB_HEAD_REF/\//-} >> $GITHUB_OUTPUT
+                fi
             fi
-        fi
-    - name: Determine Docker Hub org and tag from Pull Request
-      shell: bash
-      if: github.event_name == 'pull_request'
-      run: |
-        if [[ "$GITHUB_HEAD_REF" =~ release/(.*) ]]; then
-            echo docker_organization="usdotfhwastolcandidate" >> $GITHUB_OUTPUT
-            echo docker_image_tag="${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
-        elif [ "$GITHUB_HEAD_REF" == "carma-master" ] || [ "$GITHUB_HEAD_REF" == "master" ] || [[ "$GIT_TAG" != "" ]]; then
-            echo docker_organization="usdotfhwastol" >> $GITHUB_OUTPUT
-            echo docker_image_tag="$GIT_TAG" >> $GITHUB_OUTPUT
-        else
-            echo docker_organization="usdotfhwastoldev" >> $GITHUB_OUTPUT
-            if [ "$GITHUB_HEAD_REF" == "carma-develop" ]; then
-                echo docker_image_tag="develop" >> $GITHUB_OUTPUT
+        else 
+            if [[ "$GITHUB_REF_NAME" =~ release/(.*) ]]; then
+                echo docker_organization="usdotfhwastolcandidate" >> $GITHUB_OUTPUT
+                echo docker_image_tag="${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
+            elif [ "$GITHUB_REF_NAME" == "carma-master" ] || [ "$GITHUB_REF_NAME" == "master" ] || [[ "$GIT_TAG" != "" ]]; then
+                echo docker_organization="usdotfhwastol" >> $GITHUB_OUTPUT
+                echo docker_image_tag="$GIT_TAG" >> $GITHUB_OUTPUT
             else
-                # Replace / with - in branch name
-                echo docker_image_tag=${GITHUB_HEAD_REF/\//-} >> $GITHUB_OUTPUT
+                echo docker_organization="usdotfhwastoldev" >> $GITHUB_OUTPUT
+                if [ "$GITHUB_REF_NAME" == "carma-develop" ]; then
+                    echo docker_image_tag="develop" >> $GITHUB_OUTPUT
+                else
+                    # Replace / with - in branch name
+                    echo docker_image_tag=${GITHUB_REF_NAME/\//-} >> $GITHUB_OUTPUT
+                fi
             fi
         fi
