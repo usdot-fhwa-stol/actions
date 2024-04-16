@@ -64,7 +64,6 @@ runs:
             fi
         fi
     - name: Echo Docker Organization and Docker Image tag
-      id: docker-org-and-tag
       shell: bash
       env:
         DOCKER_ORGANIZATION: ${{ steps.docker-org-and-tag.outputs.docker_organization }}
