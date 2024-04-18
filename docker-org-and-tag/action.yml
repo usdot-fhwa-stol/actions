@@ -1,0 +1,77 @@
+name: 'Determine STOL Organization and Tag for Docker Images '
+description: 'Based on github event trigger, this action determines and outputs the dockerhub organization and image tag to pull/push images from/to.'
+outputs:
+  docker_organization:
+    description: 'Dockerhub organization for images'
+    value: ${{ steps.docker-org-and-tag.outputs.docker_organization }}
+  docker_image_tag:
+    description: 'Docker image tag'
+    value: ${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Determine git tag
+      shell: bash
+      if: contains(github.ref, 'refs/tags/')
+      run: |
+        GIT_TAG="$(git tag --points-at HEAD)"
+        if [ -z "$GIT_TAG" ]; then
+            echo "No git tag found for commit $GITHUB_SHA"
+            echo "This is required for pushing master to Docker Hub"
+            echo "Tag the commit with a version number and try again"
+            exit 1
+        else
+            echo "Found git tag $GIT_TAG"
+            echo GIT_TAG="$GIT_TAG" >> $GITHUB_ENV
+        fi
+    - name: Determine Docker Hub org and tag
+      id: docker-org-and-tag
+      shell: bash
+      env:
+        PULL_REQUEST: ${{ github.event_name }}
+      run: |
+        if [[ "$PULL_REQUEST" == "pull_request" ]]; then
+            echo "Running on PR ... "
+            if [[ "$GITHUB_BASE_REF" =~ release/(.*) ]]; then
+                echo "PR against release candidate ..."
+                echo docker_organization="usdotfhwastolcandidate" >> $GITHUB_OUTPUT
+                echo docker_image_tag="${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
+            elif [ "$GITHUB_BASE_REF" == "carma-master" ] || [ "$GITHUB_BASE_REF" == "master" ] || [[ "$GIT_TAG" != "" ]]; then
+                echo "PR against master ..."
+                echo docker_organization="usdotfhwastol" >> $GITHUB_OUTPUT
+                echo docker_image_tag="$GIT_TAG" >> $GITHUB_OUTPUT
+            else
+                echo docker_organization="usdotfhwastoldev" >> $GITHUB_OUTPUT
+                if [ "$GITHUB_BASE_REF" == "carma-develop" ] || [ "$GITHUB_BASE_REF" == "develop" ]; then
+                    echo "PR against develop ..."
+                    echo docker_image_tag="develop" >> $GITHUB_OUTPUT
+                else
+                    echo "PR against $GITHUB_BASE_REF"
+                    # Replace / with - in branch name
+                    echo docker_image_tag=${GITHUB_BASE_REF/\//-} >> $GITHUB_OUTPUT
+                fi
+            fi
+        else 
+            if [[ "$GITHUB_REF_NAME" =~ release/(.*) ]]; then
+                echo docker_organization="usdotfhwastolcandidate" >> $GITHUB_OUTPUT
+                echo docker_image_tag="${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
+            elif [ "$GITHUB_REF_NAME" == "carma-master" ] || [ "$GITHUB_REF_NAME" == "master" ] || [[ "$GIT_TAG" != "" ]]; then
+                echo docker_organization="usdotfhwastol" >> $GITHUB_OUTPUT
+                echo docker_image_tag="$GIT_TAG" >> $GITHUB_OUTPUT
+            else
+                echo docker_organization="usdotfhwastoldev" >> $GITHUB_OUTPUT
+                if [ "$GITHUB_REF_NAME" == "carma-develop" ] || [ "$GITHUB_REF_NAME" == "develop" ]; then
+                    echo docker_image_tag="develop" >> $GITHUB_OUTPUT
+                else
+                    # Replace / with - in branch name
+                    echo docker_image_tag=${GITHUB_REF_NAME/\//-} >> $GITHUB_OUTPUT
+                fi
+            fi
+        fi
+    - name: Echo Docker Organization and Docker Image tag
+      shell: bash
+      env:
+        DOCKER_ORGANIZATION: ${{ steps.docker-org-and-tag.outputs.docker_organization }}
+        DOCKER_IMAGE: ${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
+      run: |
+        echo "Docker organization $DOCKER_ORGANIZATION and docker image tag $DOCKER_IMAGE"
