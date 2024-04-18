@@ -27,10 +27,8 @@ runs:
     - name: Determine Docker Hub org and tag
       id: docker-org-and-tag
       shell: bash
-      env:
-        PULL_REQUEST: ${{ github.event_name }}
       run: |
-        if [[ "$PULL_REQUEST" == "pull_request" ]]; then
+        if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
             echo "Running on PR ... "
             if [[ "$GITHUB_BASE_REF" =~ release/(.*) ]]; then
                 echo "PR against release candidate ..."
