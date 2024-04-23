@@ -14,6 +14,7 @@ on:
         description: "Optional: List of Additional Build Contexts"
         type: "string"
         required: false
+        default: .
       file:
         description: "Optional: Path to Dockerfile"
         type: "string"
@@ -26,52 +27,44 @@ jobs:
       run:
         shell: bash
     steps:
+      - name: Check Git event trigger
+        if: ${{ github.event_name }} == "pull_request"
+        uses: actions/github-script@v3
+        with:
+          script: |
+              core.setFailed('dockerhub workflow only intended for branch commit pushes and git tag pushes!')
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Determine master git tag
-        if: github.ref == 'refs/heads/carma-master' || github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tags/')
+       
+      - name: Determine Docker organization and tag
+        id: docker-org-and-tag
+        uses: usdot-fhwa-stol/actions/docker-org-and-tag@main
+      - name: Determine base branch
+        id: determine-base-branch
         run: |
-          GIT_TAG="$(git tag --points-at HEAD)"
-          if [ -z "$GIT_TAG" ]; then
-              echo "No git tag found for commit $GITHUB_SHA"
-              echo "This is required for pushing master to Docker Hub"
-              echo "Tag the commit with a version number and try again"
-              exit 1
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            echo git_branch="$GITHUB_BASE_REF" >> $GITHUB_OUTPUT
           else
-              echo "Found git tag $GIT_TAG"
-              echo GIT_TAG="$GIT_TAG" >> $GITHUB_ENV
-          fi
-      - name: Determine Docker Hub org and tag from git branch
-        run: |
-          if [[ "$GITHUB_REF_NAME" =~ release/(.*) ]]; then
-              echo DOCKERHUB_ORG="usdotfhwastolcandidate" >> $GITHUB_ENV
-              echo DOCKERHUB_TAG="${BASH_REMATCH[1]}" >> $GITHUB_ENV
-          elif [ "$GITHUB_REF_NAME" == "carma-master" ] || [ "$GITHUB_REF_NAME" == "master" ] || [[ "$GIT_TAG" != "" ]]; then
-              echo DOCKERHUB_ORG="usdotfhwastol" >> $GITHUB_ENV
-              echo DOCKERHUB_TAG="$GIT_TAG" >> $GITHUB_ENV
-          else
-              echo DOCKERHUB_ORG="usdotfhwastoldev" >> $GITHUB_ENV
-              if [ "$GITHUB_REF_NAME" == "carma-develop" ]; then
-                  echo DOCKERHUB_TAG="develop" >> $GITHUB_ENV
-              else
-                  # Replace / with - in branch name
-                  echo DOCKERHUB_TAG=${GITHUB_REF_NAME/\//-} >> $GITHUB_ENV
-              fi
+            echo git_branch="$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
           fi
       - name: Build
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ${{ env.DOCKERHUB_ORG }}/${{ github.event.repository.name }}:${{ env.DOCKERHUB_TAG }}
-          build-args: TOKEN=${{ secrets.GH_PAT }}
+          tags: ${{ steps.docker-org-and-tag.outputs.docker_organization }}/${{ github.event.repository.name }}:${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
+          build-args: |
+            TOKEN=${{ secrets.GH_PAT }}
+            DOCKER_ORG=${{ steps.docker-org-and-tag.outputs.docker_organization }}
+            DOCKER_TAG=${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
+            GIT_BRANCH=${{ steps.determine-base-branch.outputs.git_branch}}
           context: ${{ inputs.context }}
           file: ${{ inputs.file }}
