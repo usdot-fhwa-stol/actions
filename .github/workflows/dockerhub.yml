@@ -4,16 +4,24 @@ on:
   workflow_call:
     secrets:
       DOCKERHUB_USERNAME:
+        description: Credentials for pushing images to dockerhub
         required: true
       DOCKERHUB_TOKEN:
+        description: Credentials for pushing images to dockerhub
         required: true
-      GH_PAT: 
+      GH_PAT:
+        description: "GITHUB Token for accessing private stol github repositories" 
+        required: false
+      ACCESS_ID:
+        description: "Access ID for accessing astuff s3 apt repository"
+        required: false
+      SECRET_KEY:
+        description: "Secret Key for accessing astuff s3 apt repository"
         required: false
     inputs:
       context:
-        description: "Optional: List of Additional Build Contexts"
+        description: "Build's context is the set of files located in the specified PATH or URL (default .)"
         type: "string"
-        required: false
         default: .
       file:
         description: "Optional: Path to Dockerfile"
@@ -66,5 +74,7 @@ jobs:
             DOCKER_ORG=${{ steps.docker-org-and-tag.outputs.docker_organization }}
             DOCKER_TAG=${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
             GIT_BRANCH=${{ steps.determine-base-branch.outputs.git_branch}}
+            ACCESS_ID=${{ secrets.ACCESS_ID}}
+            SECRET_KEY=${{ secrets.SECRET_KEY}}
           context: ${{ inputs.context }}
           file: ${{ inputs.file }}
