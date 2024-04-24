@@ -36,7 +36,7 @@ jobs:
         shell: bash
     steps:
       - name: Check Git event trigger
-        if: ${{ github.event_name }} == "pull_request"
+        if:  ${{ github.event_name == 'pull_request' }}
         uses: actions/github-script@v3
         with:
           script: |
