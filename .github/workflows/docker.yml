@@ -4,7 +4,7 @@ on:
   workflow_call:
     secrets:
       GH_PAT:
-        description: "GITHUB Token for accessing private stol github repositories" 
+        description: "GITHUB Token for accessing private stol github repositories"
         required: false
       ACCESS_ID:
         description: "Access ID for accessing astuff s3 apt repository"
@@ -41,6 +41,13 @@ jobs:
           else
             echo git_branch="$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
           fi
+      - name: free disk space
+        run: |
+          sudo swapoff -a
+          sudo rm -f /swapfile
+          sudo apt clean
+          docker rmi $(docker image ls -aq)
+          df -h
       - name: Build
         uses: docker/build-push-action@v5
         with:
