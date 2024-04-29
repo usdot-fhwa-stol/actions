@@ -57,9 +57,9 @@ jobs:
           large-packages: true
           docker-images: true
           swap-storage: true
+      - name: Report space
+        id: report-space
         run: |
-          sudo swapoff -a
-          sudo rm -rf /swapfile
           df -h
       - name: Build
         uses: docker/build-push-action@v5
