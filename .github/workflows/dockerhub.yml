@@ -64,6 +64,24 @@ jobs:
           else
             echo git_branch="$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
           fi
+      - name: Free Disk Space (Ubuntu)
+        # This step is required for some repositories 
+        # as 21GB limited space provided by github action
+        # gets exceeded during build process 
+        uses: jlumbroso/free-disk-space@main
+        with:
+          # this might remove tools that are actually needed,
+          # if set to "true" but frees about 6 GB
+          tool-cache: false
+
+          # all of these default to true, but feel free to set to
+          # "false" if necessary for your workflow
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: false
+          swap-storage: true
       - name: Build
         uses: docker/build-push-action@v5
         with:
