@@ -28,13 +28,13 @@ on:
         type: "string"
         required: false
       runner:
-        description: "GitHub runner for workflow (Default: ubuntu-latest)"
+        description: "GitHub runner for workflow (Default: ubuntu-latest-16-cores)"
         type: "string"
-        default: "ubuntu-latest"
+        default: "ubuntu-latest-16-cores"
 
 jobs:
   docker:
-    runs-on: ubuntu-latest-16-cores
+    runs-on: ${{ inputs.runner }}
     defaults:
       run:
         shell: bash
