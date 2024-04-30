@@ -27,6 +27,10 @@ on:
         description: "Optional: Path to Dockerfile"
         type: "string"
         required: false
+      runner:
+        description: "GitHub runner for workflow (Default: ubuntu-latest)"
+        type: "string"
+        default: "ubuntu-latest"
 
 jobs:
   docker:
