@@ -71,7 +71,7 @@ jobs:
             echo git_branch="$GITHUB_BASE_REF" >> $GITHUB_OUTPUT
           else
             echo git_branch="$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
-            
+          fi
       - name: Determine Build Metadata
         id: build-metadata
         uses: usdot-fhwa-stol/actions/docker_build_metadata@feature-add-docker-build-metadata
