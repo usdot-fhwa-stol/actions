@@ -1,0 +1,36 @@
+name: 'Determine Build Metadata'
+description: 'Determines build metadata for Docker images.'
+outputs:
+  build_date:
+    description: 'The build date in ISO 8601 format'
+    value: ${{ steps.set-build-date.outputs.build_date }}
+  vcs_ref:
+    description: 'The git commit hash reference'
+    value: ${{ steps.set-vcs-ref.outputs.vcs_ref }}
+  version:
+    description: 'The version derived from git tags or commit ID'
+    value: ${{ steps.get-version.outputs.version }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Set Build Date
+      id: set-build-date
+      shell: bash
+      run: |
+        echo "build_date=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
+        echo "::set-output name=build_date::$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+
+    - name: Set VCS Reference
+      id: set-vcs-ref
+      shell: bash
+      run: |
+        echo "vcs_ref=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+        echo "::set-output name=vcs_ref::$(git rev-parse --short HEAD)"
+
+    - name: Get Version
+      id: get-version
+      shell: bash
+      run: |
+        VERSION=$(git describe --tags --always --dirty="-SNAPSHOT")
+        echo "version=$VERSION" >> $GITHUB_ENV
+        echo "::set-output name=version::$VERSION"
