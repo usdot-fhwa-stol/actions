@@ -74,7 +74,7 @@ jobs:
             
       - name: Determine Build Metadata
         id: build-metadata
-        uses: usdot-fhwa-stol/actions/docker_build_metadata@main
+        uses: usdot-fhwa-stol/actions/docker_build_metadata@feature-add-docker-build-metadata
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
