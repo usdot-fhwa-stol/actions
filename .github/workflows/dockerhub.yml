@@ -44,7 +44,7 @@ jobs:
         uses: actions/github-script@v3
         with:
           script: |
-            core.setFailed('dockerhub workflow only intended for branch commit pushes and git tag pushes!')
+              core.setFailed('dockerhub workflow only intended for branch commit pushes and git tag pushes!')
 
       - name: Checkout
         uses: actions/checkout@v4
