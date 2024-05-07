@@ -3,7 +3,7 @@ name: Test STOL actions
 on:
   push:
     branches:
-      - main
+      - feature-add-docker-build-metadata
 jobs:
   test-build-and-upload:
     strategy:
