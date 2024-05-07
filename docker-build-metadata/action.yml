@@ -18,12 +18,15 @@ runs:
       shell: bash
       run: |
         echo "build_date=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+        echo "Build date set to $(date -u +'%Y-%m-%dT%H:%M:%SZ')" 
 
     - name: Set VCS Reference
       id: set-vcs-ref
       shell: bash
       run: |
-        echo "vcs_ref=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        VCS_REF=$(git rev-parse --short HEAD)
+        echo "vcs_ref=$VCS_REF" >> $GITHUB_OUTPUT
+        echo "VCS reference set to $VCS_REF"  
 
     - name: Get Version
       id: get-version
@@ -31,3 +34,4 @@ runs:
       run: |
         VERSION=$(git describe --tags --always --dirty="-SNAPSHOT")
         echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Version determined as $VERSION" 
