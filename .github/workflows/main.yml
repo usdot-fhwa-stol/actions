@@ -3,7 +3,7 @@ name: Test STOL actions
 on:
   push:
     branches:
-      - feature-add-docker-arguments
+      - main
 jobs:
   test-build-and-upload:
     strategy:
@@ -19,7 +19,7 @@ jobs:
       aws-secret-access-key: ${{ secrets.APT_REPO_AWS_SECRET_ACCESS_KEY }}
   test-dockerhub:
     if: ${{ github.event_name }} != "pull_request"
-    uses: usdot-fhwa-stol/actions/.github/workflows/dockerhub.yml@feature-add-docker-arguments
+    uses: usdot-fhwa-stol/actions/.github/workflows/dockerhub.yml@main
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
