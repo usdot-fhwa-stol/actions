@@ -26,6 +26,7 @@ jobs:
     with:
       context: tests/docker/
       file: tests/docker/Dockerfile_not
+      image_name: 'test-image-name-arg'
   test-docker:
     uses: usdot-fhwa-stol/actions/.github/workflows/docker.yml@main
     with:

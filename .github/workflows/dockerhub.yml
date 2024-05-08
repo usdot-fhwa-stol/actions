@@ -27,6 +27,10 @@ on:
         description: "Optional: Path to Dockerfile"
         type: "string"
         required: false
+      image_name:
+        description: "Optional: Custom image name to be used, defaults to branch name if not provided"
+        type: "string"
+        required: false
       runner:
         description: "GitHub runner for workflow (Default: ubuntu-latest-16-cores)"
         type: "string"
@@ -80,7 +84,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ${{ steps.docker-org-and-tag.outputs.docker_organization }}/${{ github.event.repository.name }}:${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
+          tags: ${{ steps.docker-org-and-tag.outputs.docker_organization }}/${{ inputs.image_name || github.event.repository.name }}:${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
           build-args: |
             BUILD_DATE=${{ steps.build-metadata.outputs.build_date }}
             VCS_REF=${{ steps.build-metadata.outputs.vcs_ref }}
