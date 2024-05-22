@@ -80,7 +80,7 @@ jobs:
         uses: usdot-fhwa-stol/actions/build-cpp-library@main
         with:
           build-wrapper: build-wrapper-linux-x86-64 --out-dir ${{ inputs.build-wrapper-out-dir }}
-          build-options: -c
+          build-options: -dc
       - name: Check coverage output
         run: |
           # check for coverage in expected location
