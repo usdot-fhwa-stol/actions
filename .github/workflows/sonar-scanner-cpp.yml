@@ -7,7 +7,7 @@ on:
         description: 'Build image tag for ghcr.io/usdot-fhwa-stol/carma-builds'
         required: false
         type: string
-        default: 'latest'
+        default: 'jammy'
       build-wrapper-out-dir:
         description: 'Build wrapper output directory'
         required: false
@@ -52,7 +52,7 @@ jobs:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
       - name:  Install sonar-scanner and build-wrapper
-        uses: sonarsource/sonarcloud-github-c-cpp@v1
+        uses: sonarsource/sonarcloud-github-c-cpp@v2
       - name: Generate sonar-project.properties
         run: |
           # Write sonar-project.properties file
