@@ -70,7 +70,7 @@ jobs:
       - name: Upload deb artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: deb-packages-${{ inputs.build-architecture }}
+          name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}
           path: |
             build*/_packages/*.deb
             ${{ inputs.working-folder }}/build*/_packages/*.deb
@@ -86,7 +86,7 @@ jobs:
       - name: Publish deb artifacts
         uses: usdot-fhwa-stol/actions/deb-s3-upload@main
         with:
-          artifact-name: deb-packages-${{ inputs.build-architecture }}
+          artifact-name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}
           aws-access-key-id: ${{ secrets.aws-access-key-id }}
           aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
           bucket-codename: ${{ inputs.bucket-codename }}
