@@ -70,7 +70,7 @@ jobs:
       - name: Upload deb artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: deb-packages-${{ inputs.build-architecture }}
+          name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}
           path: |
             build*/_packages/*.deb
             ${{ inputs.working-folder }}/build*/_packages/*.deb
