@@ -45,7 +45,7 @@ jobs:
           echo "image=carma-builds${BUILD_ARCHITECTURE}:${{ inputs.build-image-tag }}" >> $GITHUB_OUTPUT
   git-revision-info-get:
     if: ${{ inputs.build }}
-    uses: usdot-fhwa-stol/actions/.github/workflows/git-revision-info.yml@main
+    uses: usdot-fhwa-stol/actions/.github/workflows/git-revision-info.yml@fix-node-deprecation-warnings
   cpp-module-build:
     if: ${{ inputs.build }}
     runs-on: ubuntu-latest
