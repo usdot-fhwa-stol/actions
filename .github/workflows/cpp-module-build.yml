@@ -56,7 +56,7 @@ jobs:
       image: ghcr.io/usdot-fhwa-stol/${{ needs.image-name-get.outputs.image }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install dependencies
         run: |
           if [ -f install_dependencies.sh ]; then
@@ -68,7 +68,7 @@ jobs:
           package-version-suffix: ${{ needs.git-revision-info-get.outputs.git-revision-info }}
           working-folder: ${{ inputs.working-folder }}
       - name: Upload deb artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}
           path: |
