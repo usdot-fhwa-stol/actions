@@ -45,7 +45,7 @@ jobs:
           echo "image=carma-builds${BUILD_ARCHITECTURE}:${{ inputs.build-image-tag }}" >> $GITHUB_OUTPUT
   git-revision-info-get:
     if: ${{ inputs.build }}
-    uses: usdot-fhwa-stol/actions/.github/workflows/git-revision-info.yml@main
+    uses: usdot-fhwa-stol/actions/.github/workflows/git-revision-info.yml@arc-184_-Fix_actions_deprecation_warnings
   cpp-module-build:
     if: ${{ inputs.build }}
     runs-on: ubuntu-latest
@@ -63,7 +63,7 @@ jobs:
             ./install_dependencies.sh
           fi # check file existence
       - name: Build
-        uses: usdot-fhwa-stol/actions/build-cpp-library@main
+        uses: usdot-fhwa-stol/actions/build-cpp-library@arc-184_-Fix_actions_deprecation_warnings
         with:
           package-version-suffix: ${{ needs.git-revision-info-get.outputs.git-revision-info }}
           working-folder: ${{ inputs.working-folder }}
@@ -84,7 +84,7 @@ jobs:
       image: ghcr.io/usdot-fhwa-stol/actions-deb-s3:main
     steps:
       - name: Publish deb artifacts
-        uses: usdot-fhwa-stol/actions/deb-s3-upload@main
+        uses: usdot-fhwa-stol/actions/deb-s3-upload@arc-184_-Fix_actions_deprecation_warnings
         with:
           artifact-name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}
           aws-access-key-id: ${{ secrets.aws-access-key-id }}
