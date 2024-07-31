@@ -3,13 +3,13 @@ name: Test STOL actions
 on:
   push:
     branches:
-      - main
+      - arc-184_-Fix_actions_deprecation_warnings
 jobs:
   test-build-and-upload:
     strategy:
       matrix:
         architecture: [x64, armhf, arm64]
-    uses: usdot-fhwa-stol/actions/.github/workflows/cpp-module-build.yml@main
+    uses: usdot-fhwa-stol/actions/.github/workflows/cpp-module-build.yml@arc-184_-Fix_actions_deprecation_warnings
     with:
       build: true
       build-architecture: ${{ matrix.architecture }}
@@ -19,7 +19,7 @@ jobs:
       aws-secret-access-key: ${{ secrets.APT_REPO_AWS_SECRET_ACCESS_KEY }}
   test-dockerhub:
     if: ${{ github.event_name }} != "pull_request"
-    uses: usdot-fhwa-stol/actions/.github/workflows/dockerhub.yml@main
+    uses: usdot-fhwa-stol/actions/.github/workflows/dockerhub.yml@arc-184_-Fix_actions_deprecation_warnings
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -28,7 +28,7 @@ jobs:
       file: tests/docker/Dockerfile_not
       image_name: 'test-image-name-arg'
   test-docker:
-    uses: usdot-fhwa-stol/actions/.github/workflows/docker.yml@main
+    uses: usdot-fhwa-stol/actions/.github/workflows/docker.yml@arc-184_-Fix_actions_deprecation_warnings
     with:
       context: tests/docker/
       file: tests/docker/Dockerfile_not
