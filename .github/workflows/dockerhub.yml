@@ -45,7 +45,7 @@ jobs:
     steps:
       - name: Check Git event trigger
         if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/github-script@v3
+        uses: actions/github-script@v7
         with:
           script: |
               core.setFailed('dockerhub workflow only intended for branch commit pushes and git tag pushes!')
