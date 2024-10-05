@@ -36,51 +36,60 @@ runs:
         PULL_REQUEST: ${{ github.event_name }}
         DOCKER_TAG_SUFFIX: ${{ inputs.docker_tag_suffix }}
       run: |
+        docker_image_tag=""
         if [[ "$PULL_REQUEST" == "pull_request" ]]; then
             echo "Running on PR ... "
             if [[ "$GITHUB_BASE_REF" =~ release/(.*) ]]; then
                 echo "PR against release candidate ..."
-                echo docker_organization="usdotfhwastolcandidate" >> $GITHUB_OUTPUT
-                echo docker_image_tag="${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
-            elif [ "$GITHUB_BASE_REF" == "carma-master" ] || [ "$GITHUB_BASE_REF" == "master" ] || [[ "$GIT_TAG" != "" ]]; then
+                echo "docker_organization=usdotfhwastolcandidate" >> $GITHUB_OUTPUT
+                docker_image_tag="${BASH_REMATCH[1]}"
+            elif [ "$GITHUB_BASE_REF" == "carma-master" ] || [ "$GITHUB_BASE_REF" == "master" ] || [[ -n "$GIT_TAG" ]]; then
                 echo "PR against master ..."
-                echo docker_organization="usdotfhwastol" >> $GITHUB_OUTPUT
-                echo docker_image_tag="$GIT_TAG" >> $GITHUB_OUTPUT
+                echo "docker_organization=usdotfhwastol" >> $GITHUB_OUTPUT
+                docker_image_tag="$GIT_TAG"
             else
-                echo docker_organization="usdotfhwastoldev" >> $GITHUB_OUTPUT
+                echo "docker_organization=usdotfhwastoldev" >> $GITHUB_OUTPUT
                 if [ "$GITHUB_BASE_REF" == "carma-develop" ] || [ "$GITHUB_BASE_REF" == "develop" ]; then
                     echo "PR against develop ..."
-                    echo docker_image_tag="develop" >> $GITHUB_OUTPUT
+                    docker_image_tag="develop"
                 else
                     echo "PR against $GITHUB_BASE_REF"
                     # Replace / with - in branch name
-                    echo docker_image_tag=${GITHUB_BASE_REF/\//-} >> $GITHUB_OUTPUT
+                    docker_image_tag=${GITHUB_BASE_REF/\//-}
                 fi
             fi
         else 
             if [[ "$GITHUB_REF_NAME" =~ release/(.*) ]]; then
-                echo docker_organization="usdotfhwastolcandidate" >> $GITHUB_OUTPUT
-                echo docker_image_tag="${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
-            elif [ "$GITHUB_REF_NAME" == "carma-master" ] || [ "$GITHUB_REF_NAME" == "master" ] || [[ "$GIT_TAG" != "" ]]; then
-                echo docker_organization="usdotfhwastol" >> $GITHUB_OUTPUT
-                echo docker_image_tag="$GIT_TAG" >> $GITHUB_OUTPUT
+                echo "docker_organization=usdotfhwastolcandidate" >> $GITHUB_OUTPUT
+                docker_image_tag="${BASH_REMATCH[1]}"
+            elif [ "$GITHUB_REF_NAME" == "carma-master" ] || [ "$GITHUB_REF_NAME" == "master" ] || [[ -n "$GIT_TAG" ]]; then
+                echo "docker_organization=usdotfhwastol" >> $GITHUB_OUTPUT
+                docker_image_tag="$GIT_TAG"
             else
-                echo docker_organization="usdotfhwastoldev" >> $GITHUB_OUTPUT
+                echo "docker_organization=usdotfhwastoldev" >> $GITHUB_OUTPUT
                 if [ "$GITHUB_REF_NAME" == "carma-develop" ] || [ "$GITHUB_REF_NAME" == "develop" ]; then
-                    echo docker_image_tag="develop" >> $GITHUB_OUTPUT
+                    docker_image_tag="develop"
                 else
                     # Replace / with - in branch name
-                    echo docker_image_tag=${GITHUB_REF_NAME/\//-} >> $GITHUB_OUTPUT
+                    docker_image_tag=${GITHUB_REF_NAME/\//-}
                 fi
             fi
         fi
+        
         echo "debug: ${docker_image_tag}"
-        echo "DEBUG: $docker_image_tag"
         
         # Append the docker_tag_suffix if it's not empty
         if [ -n "$DOCKER_TAG_SUFFIX" ]; then
-            echo docker_image_tag="${docker_image_tag}-${DOCKER_TAG_SUFFIX}" >> $GITHUB_OUTPUT
+            docker_image_tag="${docker_image_tag}-${DOCKER_TAG_SUFFIX}"
         fi
+        
+        # Ensure docker_image_tag is not empty
+        if [ -z "$docker_image_tag" ]; then
+            docker_image_tag="latest"
+        fi
+        
+        echo "docker_image_tag=${docker_image_tag}" >> $GITHUB_OUTPUT
+        
     - name: Echo Docker Organization and Docker Image tag
       shell: bash
       env:
