@@ -74,11 +74,12 @@ runs:
                 fi
             fi
         fi
+        echo ${docker_image_tag}
+        echo $docker_image_tag
         
         # Append the docker_tag_suffix if it's not empty
         if [ -n "$DOCKER_TAG_SUFFIX" ]; then
-            docker_image_tag="${docker_image_tag}-${DOCKER_TAG_SUFFIX}"
-            echo "docker_image_tag=$docker_image_tag" >> $GITHUB_OUTPUT
+            echo docker_image_tag="${docker_image_tag}-${DOCKER_TAG_SUFFIX}" >> $GITHUB_OUTPUT
         fi
     - name: Echo Docker Organization and Docker Image tag
       shell: bash
