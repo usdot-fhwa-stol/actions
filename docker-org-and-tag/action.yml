@@ -74,8 +74,8 @@ runs:
                 fi
             fi
         fi
-        echo ${docker_image_tag}
-        echo $docker_image_tag
+        echo "debug: ${docker_image_tag}"
+        echo "DEBUG: $docker_image_tag"
         
         # Append the docker_tag_suffix if it's not empty
         if [ -n "$DOCKER_TAG_SUFFIX" ]; then
