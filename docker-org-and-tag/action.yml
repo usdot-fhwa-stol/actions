@@ -1,5 +1,10 @@
 name: 'Determine STOL Organization and Tag for Docker Images '
 description: 'Based on github event trigger, this action determines and outputs the dockerhub organization and image tag to pull/push images from/to.'
+inputs:
+  docker_tag_suffix:
+    description: "Suffix to add after the determined tag, for example: DOCKER_ORG:DOCKER_TAG-{custom_suffix}(default '')"
+    type: "string"
+    default: ""
 outputs:
   docker_organization:
     description: 'Dockerhub organization for images'
@@ -29,6 +34,7 @@ runs:
       shell: bash
       env:
         PULL_REQUEST: ${{ github.event_name }}
+        DOCKER_TAG_SUFFIX: ${{ inputs.docker_tag_suffix }}
       run: |
         if [[ "$PULL_REQUEST" == "pull_request" ]]; then
             echo "Running on PR ... "
@@ -67,6 +73,12 @@ runs:
                     echo docker_image_tag=${GITHUB_REF_NAME/\//-} >> $GITHUB_OUTPUT
                 fi
             fi
+        fi
+        
+        # Append the docker_tag_suffix if it's not empty
+        if [ -n "$DOCKER_TAG_SUFFIX" ]; then
+            docker_image_tag=$(echo $docker_image_tag >> $GITHUB_OUTPUT)-$DOCKER_TAG_SUFFIX
+            echo docker_image_tag="$docker_image_tag" >> $GITHUB_OUTPUT
         fi
     - name: Echo Docker Organization and Docker Image tag
       shell: bash
