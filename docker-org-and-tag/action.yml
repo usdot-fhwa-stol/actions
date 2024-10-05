@@ -76,16 +76,9 @@ runs:
             fi
         fi
         
-        echo "debug: ${docker_image_tag}"
-        
         # Append the docker_tag_suffix if it's not empty
         if [ -n "$DOCKER_TAG_SUFFIX" ]; then
             docker_image_tag="${docker_image_tag}-${DOCKER_TAG_SUFFIX}"
-        fi
-        
-        # Ensure docker_image_tag is not empty
-        if [ -z "$docker_image_tag" ]; then
-            docker_image_tag="latest"
         fi
         
         echo "docker_image_tag=${docker_image_tag}" >> $GITHUB_OUTPUT
