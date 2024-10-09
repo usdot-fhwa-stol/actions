@@ -31,6 +31,10 @@ on:
         description: "Optional: Custom image name to be used, defaults to branch name if not provided"
         type: "string"
         required: false
+      tag_name_suffix:
+        description: "Optional: Custom docker image tag name suffix to be appended, defaults to empty string"
+        type: "string"
+        required: false
       runner:
         description: "GitHub runner for workflow (Default: ubuntu-latest-16-cores)"
         type: "string"
@@ -66,7 +70,9 @@ jobs:
 
       - name: Determine Docker organization and tag
         id: docker-org-and-tag
-        uses: usdot-fhwa-stol/actions/docker-org-and-tag@main
+        uses: usdot-fhwa-stol/actions/docker-org-and-tag@arc-155-support-tag-suffix
+        with:
+          docker_tag_suffix: ${{inputs.tag_name_suffix}}
 
       - name: Determine base branch
         id: determine-base-branch
