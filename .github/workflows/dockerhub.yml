@@ -70,7 +70,7 @@ jobs:
 
       - name: Determine Docker organization and tag
         id: docker-org-and-tag
-        uses: usdot-fhwa-stol/actions/docker-org-and-tag@arc-155-support-tag-suffix
+        uses: usdot-fhwa-stol/actions/docker-org-and-tag@main
         with:
           docker_tag_suffix: ${{inputs.tag_name_suffix}}
 
