@@ -1,0 +1,72 @@
+name: Generic Merge Branches
+
+on:
+  schedule:
+    # The default schedule. This will be ignored if a custom schedule is provided.
+    - cron: "0 2 * * 1"  # Weekly on Monday at 2:00 AM UTC (default)
+  workflow_dispatch: # Allows for manual triggering and passing of inputs
+
+inputs:
+  base_branch:
+    description: 'The branch to merge changes into'
+    required: true
+    default: 'humble-develop'
+  head_branch:
+    description: 'The branch to merge changes from'
+    required: true
+    default: 'develop'
+  assignee:
+    description: 'GitHub username to assign the PR to in case of a conflict'
+    required: true
+    default: 'your-username-here'
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0 # Ensure the full history is fetched
+
+    # Setup Git
+    - name: Set up Git
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+    # Fetch all branches
+    - name: Fetch all branches
+      run: git fetch --all
+
+    # Checkout the base branch (target of the merge)
+    - name: Checkout base branch
+      run: git checkout ${{ inputs.base_branch }}
+
+    # Attempt to merge head branch into base branch
+    - name: Attempt to merge head into base
+      id: merge
+      run: |
+        git merge origin/${{ inputs.head_branch }} --no-commit --no-ff || echo "::set-output name=merge_conflict::true"
+
+    # Push changes if the merge is successful
+    - name: Push changes
+      if: steps.merge.outputs.merge_conflict != 'true'
+      run: git commit -m "Merge branch '${{ inputs.head_branch }}' into '${{ inputs.base_branch }}'" && git push origin ${{ inputs.base_branch }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # Create a Pull Request and assign it if there is a merge conflict
+    - name: Create Pull Request if conflict occurs
+      if: steps.merge.outputs.merge_conflict == 'true'
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        base: ${{ inputs.base_branch }}
+        head: ${{ inputs.head_branch }}
+        title: "Merge conflict: ${{ inputs.head_branch }} into ${{ inputs.base_branch }}"
+        body: "This PR was created automatically because a conflict was detected when trying to merge ${{ inputs.head_branch }} into ${{ inputs.base_branch }}. Please resolve the conflicts and merge this pull request."
+        draft: false
+        assignees: ${{ inputs.assignee }}
