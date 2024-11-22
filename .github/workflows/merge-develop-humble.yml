@@ -1,0 +1,61 @@
+name: Auto Merge develop to develop-humble
+
+on:
+  workflow_call:
+    inputs:
+      branch_from:
+        required: true
+        type: string
+      branch_to:
+        required: true
+        type: string
+      notify_team:
+        required: false
+        type: string
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Git
+        run: |
+          git config user.name "SaikrishnaBairamoni"
+          git config user.email "saikrishna.bairamoni@leidos.com"
+          git fetch --all
+
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          existing_pr=$(gh pr list --base ${{ inputs.branch_to }} --head ${{ inputs.branch_from }} --json number --jq '.[0].number') # Checks if there is an existing PR as we need to make sure we merge previous weekly PR's.
+          
+          if [ -z "$existing_pr" ]; then
+            gh pr create \
+              --title "Merge ${{ inputs.branch_from }} into ${{ inputs.branch_to }}" \
+              --body "Automated PR to merge ${{ inputs.branch_from }} into ${{ inputs.branch_to }}" \
+              --base ${{ inputs.branch_to }} \
+              --head ${{ inputs.branch_from }}
+          else
+            echo "Pull request already exists: $existing_pr"
+          fi
+
+      - name: Attempt to Auto-Merge Pull Request
+        if: ${{ success() }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pr_number=$(gh pr list --base ${{ inputs.branch_to }} --head ${{ inputs.branch_from }} --json number --jq '.[0].number')
+          gh pr merge $pr_number --merge --admin || exit 1
+
+      - name: Notify Team on Conflict
+        if: ${{ failure() && inputs.notify_team != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pr_number=$(gh pr list --base ${{ inputs.branch_to }} --head ${{ inputs.branch_from }} --json number --jq '.[0].number')
+          gh pr comment $pr_number --body "@${{ inputs.notify_team }}: Conflicts detected. Manual resolution needed."
