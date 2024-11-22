@@ -12,6 +12,7 @@ on:
       notify_team:
         required: false
         type: string
+        default: "DevOps"
 
 jobs:
   auto-merge:
