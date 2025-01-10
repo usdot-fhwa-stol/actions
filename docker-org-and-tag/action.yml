@@ -78,7 +78,13 @@ runs:
         
         # Append the docker_tag_suffix if it's not empty
         if [ -n "$DOCKER_TAG_SUFFIX" ]; then
-            docker_image_tag="${docker_image_tag}-${DOCKER_TAG_SUFFIX}"
+            if [[ "$docker_image_tag" == *"develop-humble" ]]; then
+                # Replace the last occurrence of -humble with the suffix
+                # NOTE: ARC-248 This change only lasts until develop-humble is merged into develop
+                docker_image_tag="${docker_image_tag%-humble}-${DOCKER_TAG_SUFFIX}"
+            else
+                docker_image_tag="${docker_image_tag}-${DOCKER_TAG_SUFFIX}"
+            fi
         fi
         
         echo "docker_image_tag=${docker_image_tag}" >> $GITHUB_OUTPUT
