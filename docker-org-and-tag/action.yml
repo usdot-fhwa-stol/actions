@@ -35,6 +35,7 @@ runs:
       env:
         PULL_REQUEST: ${{ github.event_name }}
         DOCKER_TAG_SUFFIX: ${{ inputs.docker_tag_suffix }}
+        REPLACE_SUFFIX: ${{ inputs.replace_suffix }}
       run: |
         docker_image_tag=""
         if [[ "$PULL_REQUEST" == "pull_request" ]]; then
@@ -78,7 +79,13 @@ runs:
         
         # Append the docker_tag_suffix if it's not empty
         if [ -n "$DOCKER_TAG_SUFFIX" ]; then
-            docker_image_tag="${docker_image_tag}-${DOCKER_TAG_SUFFIX}"
+            if [ "$REPLACE_SUFFIX" = "true" ]; then
+                # Extract the portion before and after the last "-"
+                base_tag="${docker_image_tag%-*}"  # Part before the last "-"
+                docker_image_tag="${base_tag}-${DOCKER_TAG_SUFFIX}"  # Replace suffix with custom suffix
+            else
+                docker_image_tag="${docker_image_tag}-${DOCKER_TAG_SUFFIX}"  # Append suffix if no "-"
+            fi
         fi
         
         echo "docker_image_tag=${docker_image_tag}" >> $GITHUB_OUTPUT

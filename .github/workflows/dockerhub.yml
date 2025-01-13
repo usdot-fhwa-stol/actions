@@ -35,6 +35,10 @@ on:
         description: "Optional: Custom docker image tag name suffix to be appended, defaults to empty string"
         type: "string"
         required: false
+      replace_suffix:
+        description: "Optional: True if last part of the docker_tag needs to be replaced with given tag_name_suffix"
+        type: "boolean"
+        required: false
       runner:
         description: "GitHub runner for workflow (Default: ubuntu-latest-16-cores)"
         type: "string"
@@ -73,7 +77,7 @@ jobs:
         uses: usdot-fhwa-stol/actions/docker-org-and-tag@main
         with:
           docker_tag_suffix: ${{inputs.tag_name_suffix}}
-
+          replace_suffix: ${{inputs.replace_suffix}}
       - name: Determine base branch
         id: determine-base-branch
         run: |

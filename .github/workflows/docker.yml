@@ -25,6 +25,14 @@ on:
         description: "GitHub runner for workflow (Default: ubuntu-latest)"
         type: "string"
         default: "ubuntu-latest"
+      tag_name_suffix:
+        description: "Optional: Custom docker image tag name suffix to be appended, defaults to empty string"
+        type: "string"
+        required: false
+      replace_suffix:
+        description: "Optional: True if last part of the docker_tag needs to be replaced with given tag_name_suffix"
+        type: "boolean"
+        required: false
 
 jobs:
   docker:
@@ -36,7 +44,10 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Determine Docker organization and tag
         id: docker-org-and-tag
-        uses: usdot-fhwa-stol/actions/docker-org-and-tag@main
+        uses: usdot-fhwa-stol/actions/docker-org-and-tag@arc-199-support-different-suffix
+        with:
+          docker_tag_suffix: ${{inputs.tag_name_suffix}}
+          replace_suffix: ${{inputs.replace_suffix}}
       - name: Determine base branch
         id: determine-base-branch
         run: |
