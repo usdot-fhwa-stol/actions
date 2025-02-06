@@ -18,9 +18,8 @@ inputs:
     required: false
     default: ''
   component-name:
-    description: 'The component of the APT repository. Default: main'
-    required: false
-    default: 'main'
+    description: 'The component of the APT repository. This should be equivalent to ubuntu distribution code name that this artifact supports'
+    required: true
 
 runs:
   using: 'composite'
