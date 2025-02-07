@@ -22,6 +22,10 @@ on:
         required: false
         type: string
         default: ''
+      component-name:
+        description: 'The component of the APT repository. This should be equivalent to ubuntu distribution code name that this artifact supports'
+        required: true
+        type: string
       working-folder:
         description: 'Working folder to build in'
         type: string
@@ -90,3 +94,4 @@ jobs:
           aws-access-key-id: ${{ secrets.aws-access-key-id }}
           aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
           bucket-codename: ${{ inputs.bucket-codename }}
+          component-name: ${{ inputs.component-name }}
