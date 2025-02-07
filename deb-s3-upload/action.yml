@@ -17,6 +17,9 @@ inputs:
     description: 'Bucket codename, defaults to null, which will determine the codename using determine_codename.sh'
     required: false
     default: ''
+  component-name:
+    description: 'The component of the APT repository. This should be equivalent to ubuntu distribution code name that this artifact supports'
+    required: true
 
 runs:
   using: 'composite'
@@ -39,4 +42,4 @@ runs:
           CODENAME=${{ inputs.bucket-codename }}
         fi
         echo "Using CODENAME: $CODENAME"
-        find deb-packages -name "*.deb" -print0 | xargs -0 deb-s3 upload --origin=${{ env.AWS_BUCKET_NAME }} --codename ${CODENAME} --bucket ${{ env.AWS_BUCKET_NAME }}
+        find deb-packages -name "*.deb" -print0 | xargs -0 deb-s3 upload --origin=${{ env.AWS_BUCKET_NAME }} --codename ${CODENAME} --component ${{ inputs.component-name }} --bucket ${{ env.AWS_BUCKET_NAME }}
