@@ -97,7 +97,7 @@ jobs:
             VERSION=${{ steps.build-metadata.outputs.version }}
             TOKEN=${{ secrets.GH_PAT }}
             DOCKER_ORG=${{ steps.docker-org-and-tag.outputs.docker_organization }}
-            DOCKER_TAG=arc-254-ros2-msgs-for-ros1
+            DOCKER_TAG=${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
             GIT_BRANCH=${{ steps.determine-base-branch.outputs.git_branch }}
             ACCESS_ID=${{ secrets.ACCESS_ID }}
             SECRET_KEY=${{ secrets.SECRET_KEY }}
