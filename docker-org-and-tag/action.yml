@@ -88,7 +88,7 @@ runs:
             fi
         fi
         
-        echo "docker_image_tag=${docker_image_tag}" >> $GITHUB_OUTPUT
+        echo "docker_image_tag=develop" >> $GITHUB_OUTPUT
         
     - name: Echo Docker Organization and Docker Image tag
       shell: bash

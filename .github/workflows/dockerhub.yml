@@ -74,18 +74,14 @@ jobs:
 
       - name: Determine Docker organization and tag
         id: docker-org-and-tag
-        uses: usdot-fhwa-stol/actions/docker-org-and-tag@main
+        uses: usdot-fhwa-stol/actions/docker-org-and-tag@arc-254-test
         with:
           docker_tag_suffix: ${{inputs.tag_name_suffix}}
           replace_suffix: ${{inputs.replace_suffix}}
       - name: Determine base branch
         id: determine-base-branch
         run: |
-          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
-            echo git_branch="$GITHUB_BASE_REF" >> $GITHUB_OUTPUT
-          else
-            echo git_branch="$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
-          fi
+          echo git_branch="develop" >> $GITHUB_OUTPUT
       - name: Determine Build Metadata
         id: build-metadata
         uses: usdot-fhwa-stol/actions/docker-build-metadata@main
@@ -94,7 +90,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ${{ steps.docker-org-and-tag.outputs.docker_organization }}/${{ inputs.image_name || github.event.repository.name }}:${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
+          tags: ${{ steps.docker-org-and-tag.outputs.docker_organization }}/${{ inputs.image_name || github.event.repository.name }}:arc-254-ros2-msgs-for-ros1
           build-args: |
             BUILD_DATE=${{ steps.build-metadata.outputs.build_date }}
             VCS_REF=${{ steps.build-metadata.outputs.vcs_ref }}
