@@ -73,6 +73,7 @@ jobs:
           working-folder: ${{ inputs.working-folder }}
       - name: Get package name
         run: |
+          echo "Checking path: ${GITHUB_ACTION_PATH}/get_package_name.sh"
           chmod +x get_package_name.sh
           PACKAGE_NAME=$(bash ${GITHUB_ACTION_PATH}/get_package_name.sh ${{ inputs.working-folder }})
           echo "PACKAGE_NAME=${PACKAGE_NAME}" >> $GITHUB_ENV
