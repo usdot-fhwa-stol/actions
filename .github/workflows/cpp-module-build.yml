@@ -96,11 +96,8 @@ jobs:
     steps:
       - name: Get package name
         run: |
-          if [ -f get_package_name.sh ]; then
-            chmod +x get_package_name.sh
-            PACKAGE_NAME=$(./get_package_name.sh ${{ inputs.working-folder }})
+            PACKAGE_NAME = $(grep CMAKE_PROJECT_NAME ${{ inputs.working-folder }}/build/CMakeCache.txt | cut -d "=" -f2)
             echo "PACKAGE_NAME=${PACKAGE_NAME}" >> $GITHUB_ENV
-          fi # check file existence
       - name: Publish deb artifacts
         uses: usdot-fhwa-stol/actions/deb-s3-upload@main
         with:
