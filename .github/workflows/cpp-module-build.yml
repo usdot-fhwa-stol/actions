@@ -81,7 +81,7 @@ jobs:
       - name: Upload deb artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}-${{ env.PACKAGE_NAME }}
+          name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}-${{ input.working-folder.split('/').pop() }}
           path: |
             build*/_packages/*.deb
             ${{ inputs.working-folder }}/build*/_packages/*.deb
@@ -94,14 +94,10 @@ jobs:
     container:
       image: ghcr.io/usdot-fhwa-stol/actions-deb-s3:main
     steps:
-      - name: Get package name
-        run: |
-            PACKAGE_NAME = $(grep CMAKE_PROJECT_NAME ${{ inputs.working-folder }}/build/CMakeCache.txt | cut -d "=" -f2)
-            echo "PACKAGE_NAME=${PACKAGE_NAME}" >> $GITHUB_ENV
       - name: Publish deb artifacts
         uses: usdot-fhwa-stol/actions/deb-s3-upload@main
         with:
-          artifact-name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}-${{ env.PACKAGE_NAME }}
+          artifact-name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}-${{ input.working-folder.split('/').pop() }}
           aws-access-key-id: ${{ secrets.aws-access-key-id }}
           aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
           bucket-codename: ${{ inputs.bucket-codename }}
