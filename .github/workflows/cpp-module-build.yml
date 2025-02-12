@@ -72,16 +72,11 @@ jobs:
           package-version-suffix: ${{ needs.git-revision-info-get.outputs.git-revision-info }}
           working-folder: ${{ inputs.working-folder }}
       - name: Get package name
-        run: |
-          if [ -f get_package_name.sh ]; then
-            chmod +x get_package_name.sh
-            PACKAGE_NAME=$(./get_package_name.sh ${{ inputs.working-folder }})
-            echo "PACKAGE_NAME=${PACKAGE_NAME}" >> $GITHUB_ENV
-          fi # check file existence
+        run: echo "folder_name=$(basename ${{ inputs.working-folder }})" >> $GITHUB_OUTPUT
       - name: Upload deb artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}-${{ inputs.working-folder.split('/').pop() }}
+          name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}-${{ steps.get-folder.outputs.folder_name }}
           path: |
             build*/_packages/*.deb
             ${{ inputs.working-folder }}/build*/_packages/*.deb
@@ -94,10 +89,12 @@ jobs:
     container:
       image: ghcr.io/usdot-fhwa-stol/actions-deb-s3:main
     steps:
+      - name: Get package name
+        run: echo "folder_name=$(basename ${{ inputs.working-folder }})" >> $GITHUB_OUTPUT
       - name: Publish deb artifacts
         uses: usdot-fhwa-stol/actions/deb-s3-upload@main
         with:
-          artifact-name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}-${{ inputs.working-folder.split('/').pop() }}
+          artifact-name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}-${{ steps.get-folder.outputs.folder_name }}
           aws-access-key-id: ${{ secrets.aws-access-key-id }}
           aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
           bucket-codename: ${{ inputs.bucket-codename }}
