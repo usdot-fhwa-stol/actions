@@ -5,9 +5,8 @@ on:
     inputs:
       build:
         description: 'Run a build'
-        required: false
+        required: true
         type: boolean
-        default: false
       build-architecture:
         description: 'Build architecture, defaults x64, see the carma-builds project for supported architectures'
         required: false
