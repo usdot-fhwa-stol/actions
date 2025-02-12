@@ -67,7 +67,7 @@ jobs:
             ./install_dependencies.sh
           fi # check file existence
       - name: Build
-        uses: usdot-fhwa-stol/actions/build-cpp-library@main
+        uses: usdot-fhwa-stol/actions/build-cpp-library@arc-275-update-cpp-module-build
         with:
           package-version-suffix: ${{ needs.git-revision-info-get.outputs.git-revision-info }}
           working-folder: ${{ inputs.working-folder }}
@@ -90,7 +90,7 @@ jobs:
     needs:
       - cpp-module-build
     container:
-      image: ghcr.io/usdot-fhwa-stol/actions-deb-s3:main
+      image: ghcr.io/usdot-fhwa-stol/actions-deb-s3:arc-275-update-cpp-module-build
     steps:
       - name: Get package name
         run: |
