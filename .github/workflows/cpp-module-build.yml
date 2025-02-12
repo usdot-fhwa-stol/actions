@@ -74,6 +74,7 @@ jobs:
       - name: Get package name
         run: |
           if [ -f get_package_name.sh ]; then
+            chmod +x get_package_name.sh
             PACKAGE_NAME=$(./get_package_name.sh ${{ inputs.working-folder }})
             echo "PACKAGE_NAME=${PACKAGE_NAME}" >> $GITHUB_ENV
           fi # check file existence
@@ -96,6 +97,7 @@ jobs:
       - name: Get package name
         run: |
           if [ -f get_package_name.sh ]; then
+            chmod +x get_package_name.sh
             PACKAGE_NAME=$(./get_package_name.sh ${{ inputs.working-folder }})
             echo "PACKAGE_NAME=${PACKAGE_NAME}" >> $GITHUB_ENV
           fi # check file existence
