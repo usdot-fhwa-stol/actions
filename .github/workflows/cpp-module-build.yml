@@ -53,6 +53,8 @@ jobs:
   cpp-module-build:
     if: ${{ inputs.build }}
     runs-on: ubuntu-latest
+    outputs:
+      folder_name: ${{ steps.get-folder.outputs.folder_name }}
     needs:
       - image-name-get
       - git-revision-info-get
@@ -71,10 +73,13 @@ jobs:
         with:
           package-version-suffix: ${{ needs.git-revision-info-get.outputs.git-revision-info }}
           working-folder: ${{ inputs.working-folder }}
+      - name: Get package name
+        id: get-folder
+        run: echo "folder_name=$(basename ${{ inputs.working-folder }})" >> $GITHUB_OUTPUT
       - name: Upload deb artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}
+          name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}-${{ steps.get-folder.outputs.folder_name }}
           path: |
             build*/_packages/*.deb
             ${{ inputs.working-folder }}/build*/_packages/*.deb
@@ -90,7 +95,7 @@ jobs:
       - name: Publish deb artifacts
         uses: usdot-fhwa-stol/actions/deb-s3-upload@main
         with:
-          artifact-name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}
+          artifact-name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}-${{ needs.cpp-module-build.outputs.folder_name }}
           aws-access-key-id: ${{ secrets.aws-access-key-id }}
           aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
           bucket-codename: ${{ inputs.bucket-codename }}
