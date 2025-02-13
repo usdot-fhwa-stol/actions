@@ -89,14 +89,13 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - cpp-module-build
-      - image-name-get
     container:
       image: ghcr.io/usdot-fhwa-stol/actions-deb-s3:main
     steps:
       - name: Publish deb artifacts
         uses: usdot-fhwa-stol/actions/deb-s3-upload@main
         with:
-          artifact-name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}-${{ needs.get-folder.outputs.folder_name }}
+          artifact-name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}-${{ needs.cpp-module-build.outputs.folder_name }}
           aws-access-key-id: ${{ secrets.aws-access-key-id }}
           aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
           bucket-codename: ${{ inputs.bucket-codename }}
