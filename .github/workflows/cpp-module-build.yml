@@ -54,7 +54,7 @@ jobs:
     if: ${{ inputs.build }}
     runs-on: ubuntu-latest
     outputs:
-      folder_name: ${{ steps.get-folder.folder_name }}
+      folder_name: ${{ steps.get-folder.outputs.folder_name }}
     needs:
       - image-name-get
       - git-revision-info-get
