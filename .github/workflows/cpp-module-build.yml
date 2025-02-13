@@ -53,6 +53,8 @@ jobs:
   cpp-module-build:
     if: ${{ inputs.build }}
     runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.get-folder.folder_name }}
     needs:
       - image-name-get
       - git-revision-info-get
@@ -87,16 +89,14 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - cpp-module-build
+      - image-name-get
     container:
       image: ghcr.io/usdot-fhwa-stol/actions-deb-s3:main
     steps:
-      - name: Get package name
-        id: get-folder
-        run: echo "folder_name=$(basename ${{ inputs.working-folder }})" >> $GITHUB_OUTPUT
       - name: Publish deb artifacts
         uses: usdot-fhwa-stol/actions/deb-s3-upload@main
         with:
-          artifact-name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}-${{ steps.get-folder.outputs.folder_name }}
+          artifact-name: deb-packages-${{ inputs.build-architecture }}-${{ inputs.build-image-tag }}-${{ needs.get-folder.outputs.folder_name }}
           aws-access-key-id: ${{ secrets.aws-access-key-id }}
           aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
           bucket-codename: ${{ inputs.bucket-codename }}
