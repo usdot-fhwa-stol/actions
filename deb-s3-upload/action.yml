@@ -20,6 +20,9 @@ inputs:
   component-name:
     description: 'The component of the APT repository. This should be equivalent to ubuntu distribution code name that this artifact supports'
     required: true
+  architecture:
+    description: 'Hardware architecture for package'
+    required: false
 
 runs:
   using: 'composite'
