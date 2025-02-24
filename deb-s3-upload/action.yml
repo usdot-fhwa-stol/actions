@@ -45,4 +45,17 @@ runs:
           CODENAME=${{ inputs.bucket-codename }}
         fi
         echo "Using CODENAME: $CODENAME"
+        if [ -z "${{ inputs.architecture }}" ]; then
+          if [[ "${{ inputs.arctifact-name }}" == *"arm64"* ]]; then
+            ARCHITECTURE="arm64"
+          elif [[ "${{ inputs.arctifact-name }}" == *"amd64"* ]]; then
+            ARCHITECTURE="amd64"
+          else
+            echo "Unknown architecture"
+          fi
+        else
+          ARCHITECTURE=${{ inputs.architecture }}
+        fi
+        echo "Using architecture : $ARCHITECTURE"
+
         find deb-packages -name "*.deb" -print0 | xargs -0 deb-s3 upload --origin=${{ env.AWS_BUCKET_NAME }} --codename ${CODENAME} --component ${{ inputs.component-name }} --bucket ${{ env.AWS_BUCKET_NAME }}
