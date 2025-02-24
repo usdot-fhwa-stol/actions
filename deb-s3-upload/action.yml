@@ -62,4 +62,4 @@ runs:
         fi
         echo "Using architecture : $ARCHITECTURE"
 
-        find deb-packages -name "*.deb" -print0 | xargs -0 deb-s3 upload --origin=${{ env.AWS_BUCKET_NAME }} --codename ${CODENAME} --component ${{ inputs.component-name }} --bucket ${{ env.AWS_BUCKET_NAME }} --arch $ARCHITECTURE
+        find deb-packages -name "*.deb" -print0 | xargs -0 deb-s3 upload --origin=${{ env.AWS_BUCKET_NAME }} --codename ${CODENAME} --component ${{ inputs.component-name }} --bucket ${{ env.AWS_BUCKET_NAME }} --arch ${ARCHITECTURE}
