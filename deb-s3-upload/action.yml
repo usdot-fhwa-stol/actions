@@ -50,7 +50,7 @@ runs:
         if [ -z "${{ inputs.architecture }}" ]; then
           if [[ "${{ inputs.artifact-name }}" == *"arm64"* ]]; then
             ARCHITECTURE="arm64"
-          elif [[ "${{ inputs.artifact-name }}" == *"amd64"* ]]; then
+          elif [[ "${{ inputs.artifact-name }}" == *"amd64"* || ${{ inputs.artifact-name }}" == *"x64"* ]]; then
             ARCHITECTURE="amd64"
           elif [[ "${{ inputs.artifact-name }}" == *"armhf"* ]]; then
             ARCHITECTURE="armhf"
