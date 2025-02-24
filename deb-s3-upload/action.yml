@@ -45,6 +45,8 @@ runs:
           CODENAME=${{ inputs.bucket-codename }}
         fi
         echo "Using CODENAME: $CODENAME"
+        echo "Inputs : ${{ inputs.artifact-name }}"
+        echo "Inputs : ${{ inputs.build-architecture }}"
         if [ -z "${{ inputs.architecture }}" ]; then
           if [[ "${{ inputs.arctifact-name }}" == *"arm64"* ]]; then
             ARCHITECTURE="arm64"
