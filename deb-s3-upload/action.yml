@@ -61,5 +61,11 @@ runs:
           ARCHITECTURE=${{ inputs.architecture }}
         fi
         echo "Using architecture : $ARCHITECTURE"
-
+        deb_filename="$(find deb-packages -name "*.deb")"
+        if [ -z "$deb_file" ]; then
+            echo "No .deb file found in the directory."
+        fi
+        new_debfilename="${CODENAME}_${deb_filename}"
+        echo "File name $deb_filename and new file name $new_debfilename"
+        mv ${deb_filename} ${new_debfilename}
         find deb-packages -name "*.deb" -print0 | xargs -0 deb-s3 upload --origin=${{ env.AWS_BUCKET_NAME }} --codename ${CODENAME} --component ${{ inputs.component-name }} --bucket ${{ env.AWS_BUCKET_NAME }} --arch ${ARCHITECTURE}
