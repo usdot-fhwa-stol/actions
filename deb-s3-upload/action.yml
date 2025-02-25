@@ -67,5 +67,5 @@ runs:
         fi
         new_debfilename="${CODENAME}_${deb_filename}"
         echo "File name $deb_filename and new file name $new_debfilename"
-        mv ${deb_filename} deb-packages/__w/carma-time-lib/carma-time-lib/buildamd64/_packages/carma-clock-1_0.0.1_focal_amd64.deb
+        mv ${deb_filename} deb-packages/__w/carma-time-lib/carma-time-lib/build/_packages/carma-clock-1_0.0.1_focal_amd64.deb
         find deb-packages -name "*.deb" -print0 | xargs -0 deb-s3 upload --origin=${{ env.AWS_BUCKET_NAME }} --codename ${CODENAME} --component ${{ inputs.component-name }} --bucket ${{ env.AWS_BUCKET_NAME }} --arch ${ARCHITECTURE}
