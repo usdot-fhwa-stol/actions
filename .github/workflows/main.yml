@@ -15,6 +15,7 @@ jobs:
       build: true
       build-architecture: ${{ matrix.architecture }}
       working-folder: tests/cpp_project
+      component-name: focal
     secrets:
       aws-access-key-id: ${{ secrets.APT_REPO_AWS_ACCESS_KEY_ID }}
   test-dockerhub:
