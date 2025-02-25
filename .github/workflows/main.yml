@@ -18,6 +18,7 @@ jobs:
       component-name: focal
     secrets:
       aws-access-key-id: ${{ secrets.APT_REPO_AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: "something-incorrect"
   test-dockerhub:
     if: ${{ github.event_name }} != "pull_request"
     uses: usdot-fhwa-stol/actions/.github/workflows/dockerhub.yml@main
