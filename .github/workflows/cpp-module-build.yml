@@ -46,7 +46,7 @@ jobs:
       - id: set_image
         run: |
           BUILD_ARCHITECTURE="-${{ inputs.build-architecture }}"
-          echo "image=carma-builds${BUILD_ARCHITECTURE}:${{ inputs.build-image-tag }}" >> $GITHUB_OUTPUT
+          echo "image=carma-builds${BUILD_ARCHITECTURE}:pr-40-${{ inputs.build-image-tag }}" >> $GITHUB_OUTPUT
   git-revision-info-get:
     if: ${{ inputs.build }}
     uses: usdot-fhwa-stol/actions/.github/workflows/git-revision-info.yml@main
