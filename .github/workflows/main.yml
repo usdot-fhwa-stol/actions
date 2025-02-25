@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         architecture: [x64, armhf, arm64]
-    uses: usdot-fhwa-stol/actions/.github/workflows/cpp-module-build.yml@arc-184_-Fix_actions_deprecation_warnings
+    uses: usdot-fhwa-stol/actions/.github/workflows/cpp-module-build.yml@main
     with:
       build: true
       build-architecture: ${{ matrix.architecture }}
