@@ -100,12 +100,19 @@ jobs:
         run: |
           # Extract the tag from the original output
           ORIGINAL_TAG="${{ steps.docker-org-and-tag.outputs.docker_image_tag }}"
+          echo "Original tag: $ORIGINAL_TAG"
+          
           # Remove everything after the first dash (if a dash exists)
           if [[ "$ORIGINAL_TAG" == *-* ]]; then
             BASE_TAG="${ORIGINAL_TAG%%-*}"
+            REMOVED_SUFFIX="${ORIGINAL_TAG#*-}"
+            echo "Removed suffix: -$REMOVED_SUFFIX from tag"
+            echo "Docker image output tag after suffix removal: $BASE_TAG"
             echo "processed_tag=$BASE_TAG" >> $GITHUB_OUTPUT
           else
             # If no dash exists, keep the original tag
+            echo "::warning::No suffix to remove - tag doesn't contain a dash where it was expected"
+            echo "::warning::Keeping original tag: $ORIGINAL_TAG"
             echo "processed_tag=$ORIGINAL_TAG" >> $GITHUB_OUTPUT
           fi
 
