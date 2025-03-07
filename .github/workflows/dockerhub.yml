@@ -102,10 +102,17 @@ jobs:
           ORIGINAL_TAG="${{ steps.docker-org-and-tag.outputs.docker_image_tag }}"
           echo "Original tag: $ORIGINAL_TAG"
           
-          # Remove everything after the first dash (if a dash exists)
+          # Remove everything after the last dash (if a dash exists)
           if [[ "$ORIGINAL_TAG" == *-* ]]; then
             BASE_TAG="${ORIGINAL_TAG%%-*}"
-            REMOVED_SUFFIX="${ORIGINAL_TAG#*-}"
+            for part in $(echo "$ORIGINAL_TAG" | tr "-" "\n" | head -n -1); do
+              if [ "$BASE_TAG" = "${ORIGINAL_TAG%%-*}" ]; then
+                BASE_TAG="$part"
+              else
+                BASE_TAG="$BASE_TAG-$part"
+              fi
+            done
+            REMOVED_SUFFIX="${ORIGINAL_TAG##*-}"
             echo "Removed suffix: -$REMOVED_SUFFIX from tag"
             echo "Docker image output tag after suffix removal: $BASE_TAG"
             echo "processed_tag=$BASE_TAG" >> $GITHUB_OUTPUT
@@ -115,6 +122,11 @@ jobs:
             echo "::warning::Keeping original tag: $ORIGINAL_TAG"
             echo "processed_tag=$ORIGINAL_TAG" >> $GITHUB_OUTPUT
           fi
+                
+      - name: Check for conflicting suffix options
+        if: ${{ inputs.remove_suffix == true && inputs.replace_suffix == true }}
+        run: |
+          echo "::warning::Both replace_suffix and remove_suffix are enabled. remove_suffix will override replace_suffix and remove the suffix entirely."
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
