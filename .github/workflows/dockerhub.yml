@@ -82,7 +82,6 @@ jobs:
         with:
           docker_tag_suffix: ${{inputs.tag_name_suffix}}
           replace_suffix: ${{inputs.replace_suffix}}
-          remove_suffix: ${{inputs.remove_suffix}}
       - name: Determine base branch
         id: determine-base-branch
         run: |
@@ -94,19 +93,34 @@ jobs:
       - name: Determine Build Metadata
         id: build-metadata
         uses: usdot-fhwa-stol/actions/docker-build-metadata@main
+        
+      - name: Process Docker tag (handle remove_suffix)
+        id: process-docker-tag
+        if: ${{ inputs.remove_suffix == true }}
+        run: |
+          # Extract the tag from the original output
+          ORIGINAL_TAG="${{ steps.docker-org-and-tag.outputs.docker_image_tag }}"
+          # Remove everything after the first dash (if a dash exists)
+          if [[ "$ORIGINAL_TAG" == *-* ]]; then
+            BASE_TAG="${ORIGINAL_TAG%%-*}"
+            echo "processed_tag=$BASE_TAG" >> $GITHUB_OUTPUT
+          else
+            # If no dash exists, keep the original tag
+            echo "processed_tag=$ORIGINAL_TAG" >> $GITHUB_OUTPUT
+          fi
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ${{ steps.docker-org-and-tag.outputs.docker_organization }}/${{ inputs.image_name || github.event.repository.name }}:${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
+          tags: ${{ steps.docker-org-and-tag.outputs.docker_organization }}/${{ inputs.image_name || github.event.repository.name }}:${{ inputs.remove_suffix == true && steps.process-docker-tag.outputs.processed_tag || steps.docker-org-and-tag.outputs.docker_image_tag }}
           build-args: |
             BUILD_DATE=${{ steps.build-metadata.outputs.build_date }}
             VCS_REF=${{ steps.build-metadata.outputs.vcs_ref }}
             VERSION=${{ steps.build-metadata.outputs.version }}
             TOKEN=${{ secrets.GH_PAT }}
             DOCKER_ORG=${{ steps.docker-org-and-tag.outputs.docker_organization }}
-            DOCKER_TAG=${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
+            DOCKER_TAG=${{ inputs.remove_suffix == true && steps.process-docker-tag.outputs.processed_tag || steps.docker-org-and-tag.outputs.docker_image_tag }}
             GIT_BRANCH=${{ steps.determine-base-branch.outputs.git_branch }}
             ACCESS_ID=${{ secrets.ACCESS_ID }}
             SECRET_KEY=${{ secrets.SECRET_KEY }}
