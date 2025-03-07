@@ -32,11 +32,15 @@ on:
         type: "string"
         required: false
       tag_name_suffix:
-        description: "Optional: Custom docker image tag name suffix to be appended, defaults to empty string"
+        description: "Optional: Custom docker image tag name suffix to be appended (applies to both base image and output image unless remove_suffix is used), defaults to empty string"
         type: "string"
         required: false
       replace_suffix:
-        description: "Optional: True if last part of the docker_tag needs to be replaced with given tag_name_suffix"
+        description: "Optional: True if last part of the docker_tag needs to be replaced with given tag_name_suffix (applies to both base image and output image unless remove_suffix is used)"
+        type: "boolean"
+        required: false
+      remove_suffix:
+        description: "Optional: True if suffix should be removed from the docker_tag (e.g., 'develop-humble' becomes 'develop')"
         type: "boolean"
         required: false
       runner:
@@ -78,6 +82,7 @@ jobs:
         with:
           docker_tag_suffix: ${{inputs.tag_name_suffix}}
           replace_suffix: ${{inputs.replace_suffix}}
+          remove_suffix: ${{inputs.remove_suffix}}
       - name: Determine base branch
         id: determine-base-branch
         run: |
