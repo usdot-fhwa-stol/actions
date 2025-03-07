@@ -105,8 +105,14 @@ jobs:
           # Remove everything after the last dash (if a dash exists)
           if [[ "$ORIGINAL_TAG" == *-* ]]; then
             # Extract the part before the last dash (removes suffix after last dash)
+            # ${variable%-pattern} removes the shortest match of pattern from the end
+            # Example: "develop-1-2-3-humble" becomes "develop"
             BASE_TAG="${ORIGINAL_TAG%-*}"
+            
+            # ${variable##pattern} removes the longest match of pattern from the beginning
+            # Example: for "develop-1-2-3-humble" this extracts just "humble"
             REMOVED_SUFFIX="${ORIGINAL_TAG##*-}"
+
             echo "Removed suffix: -$REMOVED_SUFFIX from tag"
             echo "Docker image output tag after suffix removal: $BASE_TAG"
             echo "processed_tag=$BASE_TAG" >> $GITHUB_OUTPUT
