@@ -94,8 +94,8 @@ jobs:
         id: build-metadata
         uses: usdot-fhwa-stol/actions/docker-build-metadata@main
         
-      - name: Process Docker tag (handle remove_suffix)
-        id: process-docker-tag
+      - name: Process Suffix in Output Docker Image tag (handle remove_suffix)
+        id: process-suffix-in-output-docker-tag
         if: ${{ inputs.remove_suffix == true }}
         run: |
           # Extract the tag from the original output
@@ -113,7 +113,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ${{ steps.docker-org-and-tag.outputs.docker_organization }}/${{ inputs.image_name || github.event.repository.name }}:${{ inputs.remove_suffix == true && steps.process-docker-tag.outputs.processed_tag || steps.docker-org-and-tag.outputs.docker_image_tag }}
+          tags: ${{ steps.docker-org-and-tag.outputs.docker_organization }}/${{ inputs.image_name || github.event.repository.name }}:${{ inputs.remove_suffix == true && steps.process-suffix-in-output-docker-tag.outputs.processed_tag || steps.docker-org-and-tag.outputs.docker_image_tag }}
           build-args: |
             BUILD_DATE=${{ steps.build-metadata.outputs.build_date }}
             VCS_REF=${{ steps.build-metadata.outputs.vcs_ref }}
