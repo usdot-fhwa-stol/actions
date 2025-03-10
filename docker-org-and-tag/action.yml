@@ -5,6 +5,10 @@ inputs:
     description: "Suffix to add after the determined tag, for example: DOCKER_ORG:DOCKER_TAG-{custom_suffix}(default '')"
     type: "string"
     default: ""
+  replace_suffix:
+    description: "Whether to replace existing suffix instead of appending (default 'false')"
+    type: "boolean"
+    default: "false"
 outputs:
   docker_organization:
     description: 'Dockerhub organization for images'
