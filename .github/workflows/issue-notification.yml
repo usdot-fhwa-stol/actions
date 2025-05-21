@@ -1,0 +1,57 @@
+name: Notify GitHub Account via Mention
+
+on:
+  workflow_call:           
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      # Debugging: Log entire issue body for visibility
+      - name: Log Issue Body
+        run: |
+          echo "Issue Body: ${{ github.event.issue.body }}"
+
+      # Extract Dropdown Value (Now correctly skipping two lines)
+      - name: Extract Dropdown Value
+        id: extract_status
+        run: |
+          RESPONSE=$(echo "${{ github.event.issue.body }}" | awk '/^### \*\*Employee Status\*\* \(Select one\)/ {getline; getline; print}' | xargs)
+          if [[ "$RESPONSE" =~ ^[Nn][Oo]$ ]]; then
+            echo "Extracted Dropdown Value: No"
+            echo "employee_status=No" >> $GITHUB_ENV
+          elif [[ "$RESPONSE" =~ ^[Yy][Ee][Ss]$ ]]; then
+            echo "Extracted Dropdown Value: Yes"
+            echo "employee_status=Yes" >> $GITHUB_ENV
+          else
+            echo "Extracted Dropdown Value: Unknown"
+            echo "employee_status=Unknown" >> $GITHUB_ENV
+          fi
+
+      # Debugging: Log Extracted Employee Status
+      - name: Log Extracted Employee Status
+        run: |
+          echo "Employee Status Extracted: $employee_status"
+        env:
+          employee_status: ${{ env.employee_status }}
+
+      # Handle "No" Case (Mentioning GitHub Account)
+      - name: Handle No Case
+        if: env.employee_status == 'No'
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          token: ${{ github.token }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            @cavss A new issue has been created by a non-STOL/Leidos employee:
+            - **Title:** ${{ github.event.issue.title }}
+            - **Description:** ${{ github.event.issue.body }}
+            - **URL:** ${{ github.event.issue.html_url }}
+
+      # Handle "Yes" Case (Log Message Instead of Exiting)
+      - name: Handle Yes Case
+        if: env.employee_status == 'Yes'
+        run: |
+          echo "User is a Saxton Lab/Leidos employee. No notification needed."
