@@ -42,7 +42,7 @@ jobs:
         if: env.employee_status == 'No'
         uses: peter-evans/create-or-update-comment@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ github.token }}
           issue-number: ${{ github.event.issue.number }}
           body: |
             @cavss A new issue has been created by a non-STOL/Leidos employee:
