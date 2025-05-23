@@ -1,0 +1,23 @@
+name: 'Remove suffix from Docker tag'
+description: 'Outputs the tag without the part after the last dash'
+inputs:
+  tag:
+    description: 'Original tag (e.g. stingray-humble)'
+    required: true
+outputs:
+  processed_tag:
+    description: 'Tag with suffix removed (e.g. stingray)'
+    value: ${{ steps.strip.outputs.result }}
+runs:
+  using: composite
+  steps:
+    - id: strip
+      shell: bash
+      run: |
+        ORIGINAL="${{ inputs.tag }}"
+        if [[ "$ORIGINAL" == *-* ]]; then
+          CLEAN="${ORIGINAL%-*}"
+        else
+          CLEAN="$ORIGINAL"
+        fi
+        echo "result=$CLEAN" >> "$GITHUB_OUTPUT"
