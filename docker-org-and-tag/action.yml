@@ -21,9 +21,9 @@ runs:
   steps:
     - name: Determine git tag
       shell: bash
-      if: contains(github.ref, 'refs/tags/')
+      if: github.ref_type == 'tag'
       run: |
-        GIT_TAG="$(git tag --points-at HEAD)"
+        GIT_TAG="${{ github.ref_name }}"
         if [ -z "$GIT_TAG" ]; then
             echo "No git tag found for commit $GITHUB_SHA"
             echo "This is required for pushing master to Docker Hub"
