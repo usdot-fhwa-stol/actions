@@ -19,15 +19,11 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0 
     - name: Determine git tag
       shell: bash
-      if: contains(github.ref, 'refs/tags/')
+      if: github.ref_type == 'tag'
       run: |
-        GIT_TAG="$(git tag --points-at HEAD)"
+        GIT_TAG="${{ github.ref_name }}"
         if [ -z "$GIT_TAG" ]; then
             echo "No git tag found for commit $GITHUB_SHA"
             echo "This is required for pushing master to Docker Hub"
@@ -52,10 +48,18 @@ runs:
                 echo "PR against release candidate ..."
                 echo "docker_organization=usdotfhwastolcandidate" >> $GITHUB_OUTPUT
                 docker_image_tag="${BASH_REMATCH[1]}"
+            # Only triggered on Pull Requests from master to another branch
+            # TODO : Can we remove this
             elif [ "$GITHUB_BASE_REF" == "carma-master" ] || [ "$GITHUB_BASE_REF" == "master" ] || [[ -n "$GIT_TAG" ]]; then
                 echo "PR against master ..."
                 echo "docker_organization=usdotfhwastol" >> $GITHUB_OUTPUT
-                docker_image_tag="$GIT_TAG"
+                # If GIT_TAG is not empty (Tag triggered workflow)
+                if [[ -n "$GIT_TAG" ]]; then
+                  docker_image_tag="$GIT_TAG"
+                # If GIT_TAG is empty (Push triggered workflow)
+                else
+                  docker_image_tag="$(git describe --tags --abbrev=0)"
+                fi
             else
                 echo "docker_organization=usdotfhwastoldev" >> $GITHUB_OUTPUT
                 if [ "$GITHUB_BASE_REF" == "carma-develop" ] || [ "$GITHUB_BASE_REF" == "develop" ]; then
@@ -71,9 +75,17 @@ runs:
             if [[ "$GITHUB_REF_NAME" =~ release/(.*) ]]; then
                 echo "docker_organization=usdotfhwastolcandidate" >> $GITHUB_OUTPUT
                 docker_image_tag="${BASH_REMATCH[1]}"
-            elif [ "$GITHUB_REF_NAME" == "carma-master" ] || [ "$GITHUB_REF_NAME" == "master" ] || [[ -n "$GIT_TAG" ]]; then
+            # Triggered on push to master
+            elif [ "$GITHUB_BASE_REF" == "carma-master" ] || [ "$GITHUB_BASE_REF" == "master" ] || [[ -n "$GIT_TAG" ]]; then
+                echo "PR against master ..."
                 echo "docker_organization=usdotfhwastol" >> $GITHUB_OUTPUT
-                docker_image_tag="$GIT_TAG"
+                # If GIT_TAG is not empty (Tag triggered workflow)
+                if [[ -n "$GIT_TAG" ]]; then
+                  docker_image_tag="$GIT_TAG"
+                # If GIT_TAG is empty (Push triggered workflow)
+                else 
+                  docker_image_tag="$(git describe --tags --abbrev=0)"
+                fi
             else
                 echo "docker_organization=usdotfhwastoldev" >> $GITHUB_OUTPUT
                 if [ "$GITHUB_REF_NAME" == "carma-develop" ] || [ "$GITHUB_REF_NAME" == "develop" ]; then
