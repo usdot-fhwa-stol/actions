@@ -62,7 +62,7 @@ runs:
                   docker_image_tag="$GIT_TAG"
                 # If GIT_TAG is empty (Push triggered workflow)
                 else
-                  docker_image_tag="$(git describe --tags --abbrev=0)" 
+                  docker_image_tag="$(git describe --tags --abbrev=0 --match 'carma-system-*')" 
                 fi
             else
                 echo "docker_organization=usdotfhwastoldev" >> $GITHUB_OUTPUT
@@ -88,7 +88,7 @@ runs:
                   docker_image_tag="$GIT_TAG"
                 # If GIT_TAG is empty (Push triggered workflow)
                 else
-                  docker_image_tag="$(git describe --tags --abbrev=0)"        # ← edit ②
+                  docker_image_tag="$(git describe --tags --abbrev=0 --match 'carma-system-*')"
                 fi
             else
                 echo "docker_organization=usdotfhwastoldev" >> $GITHUB_OUTPUT
