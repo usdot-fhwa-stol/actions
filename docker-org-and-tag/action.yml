@@ -54,7 +54,7 @@ runs:
                 echo "PR against master ..."
                 echo "docker_organization=usdotfhwastol" >> $GITHUB_OUTPUT
                 # If GIT_TAG is not empty (Tag triggered workflow)
-                if [[ -n "$GIT_TAG"]]; then
+                if [[ -n "$GIT_TAG" ]]; then
                   docker_image_tag="$GIT_TAG"
                 # If GIT_TAG is empty (Push triggered workflow)
                 else 
@@ -80,7 +80,7 @@ runs:
                 echo "PR against master ..."
                 echo "docker_organization=usdotfhwastol" >> $GITHUB_OUTPUT
                 # If GIT_TAG is not empty (Tag triggered workflow)
-                if [[ -n "$GIT_TAG"]]; then
+                if [[ -n "$GIT_TAG" ]]; then
                   docker_image_tag="$GIT_TAG"
                 # If GIT_TAG is empty (Push triggered workflow)
                 else 
