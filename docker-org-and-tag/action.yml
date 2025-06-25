@@ -76,7 +76,7 @@ runs:
                 echo "docker_organization=usdotfhwastolcandidate" >> $GITHUB_OUTPUT
                 docker_image_tag="${BASH_REMATCH[1]}"
             # Triggered on push to master
-            elif [ "$GITHUB_BASE_REF" == "carma-master" ] || [ "$GITHUB_BASE_REF" == "master" ] || [[ -n "$GIT_TAG" ]]; then
+            elif [ "$GITHUB_REF_NAME" == "carma-master" ] || [ "$GITHUB_REF_NAME" == "master" ] || [[ -n "$GIT_TAG" ]]; then
                 echo "PR against master ..."
                 echo "docker_organization=usdotfhwastol" >> $GITHUB_OUTPUT
                 # If GIT_TAG is not empty (Tag triggered workflow)
@@ -84,7 +84,7 @@ runs:
                   docker_image_tag="$GIT_TAG"
                 # If GIT_TAG is empty (Push triggered workflow)
                 else 
-                  docker_image_tag="$GITHUB_BASE_REF"
+                  docker_image_tag="$GITHUB_REF_NAME"
                 fi
             else
                 echo "docker_organization=usdotfhwastoldev" >> $GITHUB_OUTPUT
