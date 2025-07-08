@@ -16,6 +16,10 @@ outputs:
   docker_image_tag:
     description: 'Docker image tag'
     value: ${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
+  docker_image_tag_alias:
+    description: 'Alias tag (master-*  → carma-master-*)'
+    value: ${{ steps.docker-org-and-tag.outputs.docker_image_tag_alias }}
+
 runs:
   using: 'composite'
   steps:
@@ -107,7 +111,17 @@ runs:
                 docker_image_tag="${docker_image_tag}-${DOCKER_TAG_SUFFIX}"  # Append suffix if no "-"
             fi
         fi
-        
+
+        # create carma-master tag for master-* when using docker_image_tag_alias in repositories.
+        if [[ "$docker_image_tag" == master-* ]]; then
+            echo "docker_image_tag_alias=${docker_image_tag/master-/carma-master-}" >> $GITHUB_OUTPUT
+        fi
+
+        # Create master (with or without suffix) for carma-master (matching suffix/none) when using docker_image_tag_alias.
+        if [[ "$docker_image_tag" == carma-master* ]]; then
+            echo "docker_image_tag_alias=${docker_image_tag/carma-master/master}" >> $GITHUB_OUTPUT
+        fi
+
         echo "docker_image_tag=${docker_image_tag}" >> $GITHUB_OUTPUT
         
     - name: Echo Docker Organization and Docker Image tag
