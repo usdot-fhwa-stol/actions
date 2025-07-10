@@ -47,6 +47,10 @@ on:
         description: "GitHub runner for workflow (Default: ubuntu-latest-16-cores)"
         type: "string"
         default: "ubuntu-latest-16-cores"
+      enable_dual_tag_push:
+        description: "Set to true if alias tags like master-humble should be pushed"
+        type: "boolean"
+        required: false
 
 jobs:
   docker:
@@ -145,3 +149,14 @@ jobs:
             SECRET_KEY=${{ secrets.SECRET_KEY }}
           context: ${{ inputs.context }}
           file: ${{ inputs.file }}
+      
+      - name: Push alias tag
+        if: ${{ steps.docker-org-and-tag.outputs.docker_image_tag_alias != '' && inputs.enable_dual_tag_push == true }}
+        run: |
+          IMAGE=${{ steps.docker-org-and-tag.outputs.docker_organization }}/${{ inputs.image_name || github.event.repository.name }}
+          SRC=${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
+          DST=${{ steps.docker-org-and-tag.outputs.docker_image_tag_alias }}
+
+          echo "Pushing alias tag from $SRC to $DST for image $IMAGE"
+          docker tag  $IMAGE:$SRC  $IMAGE:$DST
+          docker push $IMAGE:$DST
