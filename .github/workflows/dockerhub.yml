@@ -156,7 +156,8 @@ jobs:
           IMAGE=${{ steps.docker-org-and-tag.outputs.docker_organization }}/${{ inputs.image_name || github.event.repository.name }}
           SRC=${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
           DST=${{ steps.docker-org-and-tag.outputs.docker_image_tag_alias }}
-
+          echo "Pulling image to tag alias: $IMAGE:$SRC"
+          docker pull $IMAGE:$SRC
           echo "Pushing alias tag from $SRC to $DST for image $IMAGE"
           docker tag  $IMAGE:$SRC  $IMAGE:$DST
           docker push $IMAGE:$DST
