@@ -16,6 +16,9 @@ outputs:
   docker_image_tag:
     description: 'Docker image tag'
     value: ${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
+  docker_pull_tag:
+    description: 'Pull base images with tags as master or carma-master'
+    value: ${{ steps.docker-org-and-tag.outputs.docker_pull_tag }}
 runs:
   using: 'composite'
   steps:
@@ -107,6 +110,15 @@ runs:
                 docker_image_tag="${docker_image_tag}-${DOCKER_TAG_SUFFIX}"  # Append suffix if no "-"
             fi
         fi
+        
+        if [[ "$docker_image_tag" == carma-master* ]]; then
+            docker_pull_tag="${docker_image_tag/#carma-/}"
+        elif [[ "$docker_image_tag" == master* ]]; then
+            docker_pull_tag="carma-${docker_image_tag}"
+        else
+            docker_pull_tag="$docker_image_tag"
+        fi
+        echo "docker_pull_tag=${docker_pull_tag}" >> "$GITHUB_OUTPUT"
         
         echo "docker_image_tag=${docker_image_tag}" >> $GITHUB_OUTPUT
         
