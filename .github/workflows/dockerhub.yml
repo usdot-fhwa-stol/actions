@@ -52,6 +52,10 @@ on:
         type: "string"
         default: ""
         required: false
+      override_tag:
+        description: "Exact Docker image tag; overrides suffix logic e.g., master-jammy to jammy or develop-jammy to jammy"
+        type: "string"
+        required: false
 
 jobs:
   docker:
@@ -137,7 +141,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ${{ steps.docker-org-and-tag.outputs.docker_organization }}/${{ inputs.image_name || github.event.repository.name }}:${{ inputs.remove_suffix == true && steps.process-suffix-in-output-docker-tag.outputs.processed_tag || steps.docker-org-and-tag.outputs.docker_image_tag }}
+          tags: ${{ steps.docker-org-and-tag.outputs.docker_organization }}/${{ inputs.image_name || github.event.repository.name }}:${{ inputs.override_tag || (inputs.remove_suffix == true && steps.process-suffix-in-output-docker-tag.outputs.processed_tag) || steps.docker-org-and-tag.outputs.docker_image_tag }}
           build-args: |
             BUILD_DATE=${{ steps.build-metadata.outputs.build_date }}
             VCS_REF=${{ steps.build-metadata.outputs.vcs_ref }}
