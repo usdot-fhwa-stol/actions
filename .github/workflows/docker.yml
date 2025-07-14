@@ -44,7 +44,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Determine Docker organization and tag
         id: docker-org-and-tag
-        uses: usdot-fhwa-stol/actions/docker-org-and-tag@fix/master_builds
+        uses: usdot-fhwa-stol/actions/docker-org-and-tag@main
         with:
           docker_tag_suffix: ${{inputs.tag_name_suffix}}
           replace_suffix: ${{inputs.replace_suffix}}
