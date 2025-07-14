@@ -47,6 +47,11 @@ on:
         description: "GitHub runner for workflow (Default: ubuntu-latest-16-cores)"
         type: "string"
         default: "ubuntu-latest-16-cores"
+      additional_build_args:
+        description: "Optional: Additional custom Docker build arguments e.g., UBUNTU_VERSION=jammy"
+        type: "string"
+        default: ""
+        required: false
 
 jobs:
   docker:
@@ -143,5 +148,6 @@ jobs:
             GIT_BRANCH=${{ steps.determine-base-branch.outputs.git_branch }}
             ACCESS_ID=${{ secrets.ACCESS_ID }}
             SECRET_KEY=${{ secrets.SECRET_KEY }}
+            ${{ inputs.additional_build_args }}
           context: ${{ inputs.context }}
           file: ${{ inputs.file }}
