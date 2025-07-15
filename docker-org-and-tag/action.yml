@@ -58,7 +58,7 @@ runs:
                   docker_image_tag="$GIT_TAG"
                 # If GIT_TAG is empty (Push triggered workflow)
                 else 
-                  docker_image_tag="$GITHUB_BASE_REF"
+                  docker_image_tag="master"
                 fi
             else
                 echo "docker_organization=usdotfhwastoldev" >> $GITHUB_OUTPUT
@@ -84,7 +84,7 @@ runs:
                   docker_image_tag="$GIT_TAG"
                 # If GIT_TAG is empty (Push triggered workflow)
                 else 
-                  docker_image_tag="$GITHUB_REF_NAME"
+                  docker_image_tag="master"
                 fi
             else
                 echo "docker_organization=usdotfhwastoldev" >> $GITHUB_OUTPUT
