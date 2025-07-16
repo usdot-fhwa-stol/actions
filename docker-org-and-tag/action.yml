@@ -16,9 +16,6 @@ outputs:
   docker_image_tag:
     description: 'Docker image tag'
     value: ${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
-  docker_pull_tag:
-    description: 'Pull base images with tags as master or carma-master'
-    value: ${{ steps.docker-org-and-tag.outputs.docker_pull_tag }}
 runs:
   using: 'composite'
   steps:
@@ -61,7 +58,7 @@ runs:
                   docker_image_tag="$GIT_TAG"
                 # If GIT_TAG is empty (Push triggered workflow)
                 else 
-                  docker_image_tag="$GITHUB_BASE_REF"
+                  docker_image_tag="master"
                 fi
             else
                 echo "docker_organization=usdotfhwastoldev" >> $GITHUB_OUTPUT
@@ -87,7 +84,7 @@ runs:
                   docker_image_tag="$GIT_TAG"
                 # If GIT_TAG is empty (Push triggered workflow)
                 else 
-                  docker_image_tag="$GITHUB_REF_NAME"
+                  docker_image_tag="master"
                 fi
             else
                 echo "docker_organization=usdotfhwastoldev" >> $GITHUB_OUTPUT
@@ -111,32 +108,7 @@ runs:
             fi
         fi
         
-        REPO_NAME="${GITHUB_REPOSITORY##*/}"
-          # For autoware.ai repository:
-          # If docker_image_tag starts with "carma-master", strip the "carma-" prefix to pull from carma-base:master-*
-          # Example: carma-master-humble → master-humble
-        if [[ "$REPO_NAME" == "autoware.ai" ]]; then     
-          
-          if [[ "$docker_image_tag" == carma-master* ]]; then
-            docker_pull_tag="${docker_image_tag/#carma-/}"   # carma-master* → master*
-          else
-            docker_pull_tag="$docker_image_tag"
-          fi
-        
-        elif [[ "$docker_image_tag" == master ]]; then  
-          # For downstream repositories on master branch:
-          # If they use autoware.ai as the base image, pull autoware.ai:carma-master.
-          # If they use carma-base as the base image, pull carma-base:master-humble or master-noetic (based on suffix, no change needed here).   
-          if [[ "$BASE_IMAGE" == "autoware.ai" ]]; then
-            docker_pull_tag="carma-master"   # Pull autoware.ai:carma-master
-          else
-            docker_pull_tag="$docker_image_tag" 
-          fi
-        else
-          docker_pull_tag="$docker_image_tag" # every other individual branches like  develop, release…) 
-        fi
-        echo "docker_pull_tag=${docker_pull_tag}" >>"$GITHUB_OUTPUT"
-        echo "docker_image_tag=${docker_image_tag}" >>"$GITHUB_OUTPUT"
+        echo "docker_image_tag=${docker_image_tag}" >> $GITHUB_OUTPUT
         
     - name: Echo Docker Organization and Docker Image tag
       shell: bash

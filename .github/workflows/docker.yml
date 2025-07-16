@@ -44,7 +44,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Determine Docker organization and tag
         id: docker-org-and-tag
-        uses: usdot-fhwa-stol/actions/docker-org-and-tag@main
+        uses: usdot-fhwa-stol/actions/docker-org-and-tag@fix/master_builds
         with:
           docker_tag_suffix: ${{inputs.tag_name_suffix}}
           replace_suffix: ${{inputs.replace_suffix}}
@@ -64,7 +64,7 @@ jobs:
           build-args: |
             TOKEN=${{ secrets.GH_PAT }}
             DOCKER_ORG=${{ steps.docker-org-and-tag.outputs.docker_organization }}
-            DOCKER_TAG=${{ steps.docker-org-and-tag.outputs.docker_pull_tag }}
+            DOCKER_TAG=${{ steps.docker-org-and-tag.outputs.docker_image_tag }}
             GIT_BRANCH=${{ steps.determine-base-branch.outputs.git_branch}}
             ACCESS_ID=${{ secrets.ACCESS_ID}}
             SECRET_KEY=${{ secrets.SECRET_KEY}}
