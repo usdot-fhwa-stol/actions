@@ -29,11 +29,6 @@ runs:
           source "$INIT_ENV"
         fi
 
-        if ! which sonar-scanner; then
-          echo "Unable to find sonar-scanner in $PATH"
-          exit 1
-        fi
-
         if [ -d "${{ inputs.working-dir }}" ]; then
           cd "${{ inputs.working-dir }}" || exit 1
         else
