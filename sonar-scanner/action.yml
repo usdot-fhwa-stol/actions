@@ -45,12 +45,11 @@ runs:
       env:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
       with:
-        working-directory: ${{ inputs.working-dir }}
-        # Consult https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/scanners/sonarscanner/ for more information and options
         args: >
-          -Dproject.settings="${{ inputs.sonar-properties-path }}" 
-          -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }} 
-          -Dsonar.pullrequest.branch=$PR_HEAD_REF 
+          -Dsonar.projectBaseDir="${{ inputs.working-dir }}"
+          -Dproject.settings="${{ inputs.sonar-properties-path }}"
+          -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }}
+          -Dsonar.pullrequest.branch=$PR_HEAD_REF
           -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
     - name: SonarQube Scan main branch
       if: github.event_name != 'pull_request'
@@ -58,7 +57,6 @@ runs:
       env:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
       with:
-        working-directory: ${{ inputs.working-dir }}
-        # Consult https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/scanners/sonarscanner/ for more information and options
         args: >
-          -Dproject.settings="${{ inputs.sonar-properties-path }}" 
+          -Dsonar.projectBaseDir="${{ inputs.working-dir }}"
+          -Dproject.settings="${{ inputs.sonar-properties-path }}"
