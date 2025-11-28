@@ -14,7 +14,7 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Run sonar-scanner
+    - name: Setup Environment
       shell: bash
       env:
         PR_HEAD_REF: ${{ github.head_ref }}
@@ -44,9 +44,26 @@ runs:
           echo "File does not exist!: ${{ inputs.sonar-properties-path }}"
           exit 1
         fi
-
-        if [ "${{ github.event_name }}" == "pull_request" ]; then
-          sonar-scanner -X -Dproject.settings="${{ inputs.sonar-properties-path }}" -Dsonar.login="${{ inputs.sonar-token }}" -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }} -Dsonar.pullrequest.branch=$PR_HEAD_REF -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
-        else
-          sonar-scanner -X -Dproject.settings="${{ inputs.sonar-properties-path }}" -Dsonar.login="${{ inputs.sonar-token }}"
-        fi
+    - name: SonarQube Scan Pull Request
+      if: "${{ github.event_name }}" == "pull_request"
+      uses: SonarSource/sonarqube-scan-action@v6
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        # Consult https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/scanners/sonarscanner/ for more information and options
+        args: >
+          -Dproject.settings="${{ inputs.sonar-properties-path }}" 
+          -Dsonar.login="${{ inputs.sonar-token }}" 
+          -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }} 
+          -Dsonar.pullrequest.branch=$PR_HEAD_REF 
+          -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
+    - name: SonarQube Scan main branch
+      if: "${{ github.event_name }}" != "pull_request"
+      uses: SonarSource/sonarqube-scan-action@v6
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        # Consult https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/scanners/sonarscanner/ for more information and options
+        args: >
+          -Dproject.settings="${{ inputs.sonar-properties-path }}" 
+          -Dsonar.login="${{ inputs.sonar-token }}" 
