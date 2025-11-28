@@ -46,8 +46,8 @@ runs:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
       with:
         args: >
-          -Dsonar.projectBaseDir="${{ inputs.working-dir }}"
-          -Dproject.settings="${{ inputs.sonar-properties-path }}"
+          -Dsonar.projectBaseDir=${{ inputs.working-dir }}
+          -Dproject.settings=${{ inputs.sonar-properties-path }}
           -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }}
           -Dsonar.pullrequest.branch=$PR_HEAD_REF
           -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
@@ -58,5 +58,5 @@ runs:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
       with:
         args: >
-          -Dsonar.projectBaseDir="${{ inputs.working-dir }}"
-          -Dproject.settings="${{ inputs.sonar-properties-path }}"
+          -Dsonar.projectBaseDir=${{ inputs.working-dir }}
+          -Dproject.settings=${{ inputs.sonar-properties-path }}
