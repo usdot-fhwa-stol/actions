@@ -45,6 +45,7 @@ runs:
       env:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
       with:
+        working-directory: ${{ inputs.working-dir }}
         # Consult https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/scanners/sonarscanner/ for more information and options
         args: >
           -Dproject.settings="${{ inputs.sonar-properties-path }}" 
@@ -57,6 +58,7 @@ runs:
       env:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
       with:
+        working-directory: ${{ inputs.working-dir }}
         # Consult https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/scanners/sonarscanner/ for more information and options
         args: >
           -Dproject.settings="${{ inputs.sonar-properties-path }}" 
