@@ -45,7 +45,7 @@ runs:
           exit 1
         fi
     - name: SonarQube Scan Pull Request
-      if: "${{ github.event_name }}" == "pull_request"
+      if: github.event_name == 'pull_request'
       uses: SonarSource/sonarqube-scan-action@v6
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -58,7 +58,7 @@ runs:
           -Dsonar.pullrequest.branch=$PR_HEAD_REF 
           -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
     - name: SonarQube Scan main branch
-      if: "${{ github.event_name }}" != "pull_request"
+      if: github.event_name != 'pull_request'
       uses: SonarSource/sonarqube-scan-action@v6
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
