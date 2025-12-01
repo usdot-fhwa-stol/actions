@@ -5,6 +5,7 @@ inputs:
     description: 'Path to sonar-scanner.properties, can be relative to working directory'
     required: false
     default: '.sonarqube/sonar-scanner.properties'
+    deprecationMessage: 'Specifying a custom project indepedent path for the sonar-scanner.properties file is no longer supported by sonar scanner actions. Please move your properties file to the project root and name it ‎sonar-project.properties'
   sonar-token:
     description: 'Token for use with SonarCloud'
     required: true
@@ -33,6 +34,10 @@ runs:
           cd "${{ inputs.working-dir }}" || exit 1
         else
           echo "Directory does not exist!: ${{ inputs.working-dir }}"
+        fi
+        if [ -f "${{ inputs.sonar-properties-path }}" ]; then
+          echo "::warning Your project is using the deprecated sonar-properties-path input! Please move your sonar-project.properties file to the project root and name it ‎sonar-project.properties"
+          mv ${{ inputs.sonar-properties-path }} ‎sonar-project.properties
         fi
     - name: SonarQube Scan Pull Request
       if: github.event_name == 'pull_request'
