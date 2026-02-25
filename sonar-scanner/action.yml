@@ -41,7 +41,7 @@ runs:
         fi
     - name: SonarQube Scan Pull Request
       if: github.event_name == 'pull_request'
-      uses: SonarSource/sonarqube-scan-action@v6
+      uses: SonarSource/sonarqube-scan-action@v7
       env:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
       with:
@@ -53,7 +53,7 @@ runs:
           -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
     - name: SonarQube Scan main branch
       if: github.event_name != 'pull_request'
-      uses: SonarSource/sonarqube-scan-action@v6
+      uses: SonarSource/sonarqube-scan-action@v7
       env:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
       with:
