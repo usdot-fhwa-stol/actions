@@ -39,6 +39,7 @@ runs:
           echo "::warning Your project is using the deprecated sonar-properties-path input! Please move your sonar-project.properties file to the project root and name it ‎sonar-project.properties"
           mv ${{ inputs.sonar-properties-path }} ‎sonar-project.properties
         fi
+        cat sonar-project.properties
     - name: SonarQube Scan Pull Request
       if: github.event_name == 'pull_request'
       uses: SonarSource/sonarqube-scan-action@v6
