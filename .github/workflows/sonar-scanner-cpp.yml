@@ -62,19 +62,11 @@ jobs:
         with:
           build-options: -c
 
-      - name: Validate sonar inputs and check Coverage output
+      - name: Check coverage output
         run: |
-          test -f sonar-project.properties
-          echo "Found sonar-project.properties"
-
-          echo "Searching for compile_commands.json..."
-          find . -name compile_commands.json || true
-          ls -al /opt/carma/build/compile_commands.json || true
-          ls -al build/compile_commands.json || true
+          # check for coverage in expected location
+          ls -al build/coverage_sonar.xml
           
-          echo "Checking coverage output..."
-          ls -al build/coverage_sonar.xml || true
-
       - name: Set CLONED_REPO_PATH
         run: echo "CLONED_REPO_PATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
       - run: ls -la && pwd 
