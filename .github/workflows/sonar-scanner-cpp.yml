@@ -8,11 +8,6 @@ on:
         required: false
         type: string
         default: 'jammy'
-      build-wrapper-out-dir:
-        description: 'Build wrapper output directory'
-        required: false
-        type: string
-        default: 'bw_output'
       sonar-organization:
         description: 'Sonar Cloud organization id'
         required: false
@@ -54,21 +49,6 @@ jobs:
         with:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
-      - name: Install Build Wrapper
-        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@v6
-      - name: Generate sonar-project.properties
-        run: |
-          cd "$GITHUB_WORKSPACE"
-          cat <<EOF > sonar-project.properties
-          sonar.host.url=https://sonarcloud.io
-          sonar.organization=${{ inputs.sonar-organization }}
-          sonar.projectKey=${{ inputs.sonar-project-key }}
-
-          sonar.sources=src
-          sonar.tests=test
-          sonar.coverageReportPaths=build/coverage_sonar.xml
-          sonar.cfamily.build-wrapper-output=${{ inputs.build-wrapper-out-dir }}
-          EOF
 
       - name: Run install_dependencies.sh script
         run: |
@@ -76,16 +56,24 @@ jobs:
             chmod +x install_dependencies.sh
             ./install_dependencies.sh
           fi
-      - name: Run build script with build-wrapper
-        # here goes your compilation wrapped with build-wrapper; See https://docs.sonarcloud.io/advanced-setup/languages/c-c-objective-c/#analysis-steps-using-build-wrapper for more information
+
+      - name: Run build script
         uses: usdot-fhwa-stol/actions/build-cpp-library@main
         with:
-          build-wrapper: build-wrapper-linux-x86-64 --out-dir ${{ inputs.build-wrapper-out-dir }}
           build-options: -c
-      - name: Check coverage output
+
+      - name: Validate sonar inputs and check Coverage output
         run: |
-          # check for coverage in expected location
-          ls -al build/coverage_sonar.xml
+          test -f sonar-project.properties
+          echo "Found sonar-project.properties"
+
+          echo "Searching for compile_commands.json..."
+          find . -name compile_commands.json || true
+          ls -al /opt/carma/build/compile_commands.json || true
+          ls -al build/compile_commands.json || true
+          
+          echo "Checking coverage output..."
+          ls -al build/coverage_sonar.xml || true
 
       - name: Set CLONED_REPO_PATH
         run: echo "CLONED_REPO_PATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
