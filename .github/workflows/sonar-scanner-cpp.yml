@@ -58,7 +58,7 @@ jobs:
           fi
 
       - name: Run build script
-        uses: usdot-fhwa-stol/actions/build-cpp-library@update_sonar_scanner_cpp_workflow
+        uses: usdot-fhwa-stol/actions/build-cpp-library@main
         with:
           build-options: -c
 
@@ -72,7 +72,7 @@ jobs:
         run: echo "CLONED_REPO_PATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
       - run: ls -la && pwd 
       - name: Run sonar-scanner
-        uses: usdot-fhwa-stol/actions/sonar-scanner@update_sonar_scanner_cpp_workflow
+        uses: usdot-fhwa-stol/actions/sonar-scanner@main
         with:
           sonar-token: ${{ secrets.sonarcloud-token }}
           working-dir: ${{ env.CLONED_REPO_PATH }}
