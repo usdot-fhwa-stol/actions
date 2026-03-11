@@ -65,6 +65,7 @@ jobs:
       - name: Check coverage output
         run: |
           # check for coverage in expected location
+          ls -al build
           ls -al build/coverage_sonar.xml
           
       - name: Set CLONED_REPO_PATH
