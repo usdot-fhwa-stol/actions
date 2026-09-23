@@ -10,7 +10,7 @@ if [[ ${GITHUB_REF_NAME} =~ feature/.* ]]; then
 
 # check for release candidate branches
 elif [[ ${GITHUB_REF_NAME} =~ release/.* ]]; then
-    APT_CODENAME=candidate-${NO_UNDERSCORE_NAME##*/}
+    APT_CODENAME=release-${NO_UNDERSCORE_NAME##*/}
 
 # check for release tags
 elif [[ ${GITHUB_REF_TYPE} == tag ]] || [[ ${GITHUB_REF_NAME} == main ]] || [[ ${GITHUB_REF_NAME} == master ]]; then
