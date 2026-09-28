@@ -2,10 +2,10 @@ name: 'Run sonar-scanner'
 description: 'Run sonar-scanner'
 inputs:
   sonar-properties-path:
-    description: 'Path to sonar-scanner.properties, can be relative to working directory'
+    description: 'Path to sonar-project.properties, can be relative to working directory'
     required: false
-    default: '.sonarqube/sonar-scanner.properties'
-    deprecationMessage: 'Specifying a custom project indepedent path for the sonar-scanner.properties file is no longer supported by sonar scanner actions. Please move your properties file to the project root and name it ‎sonar-project.properties'
+    default: 'sonar-project.properties'
+    deprecationMessage: 'Specifying a custom project indepedent path for the sonar-scanner.properties file is no longer supported by sonar scanner actions. Please move your properties file to the project root and name it sonar-project.properties'
   sonar-token:
     description: 'Token for use with SonarCloud'
     required: true
@@ -34,26 +34,29 @@ runs:
           cd "${{ inputs.working-dir }}" || exit 1
         else
           echo "Directory does not exist!: ${{ inputs.working-dir }}"
+          exit 1
         fi
-        if [ -f "${{ inputs.sonar-properties-path }}" ]; then
-          echo "::warning Your project is using the deprecated sonar-properties-path input! Please move your sonar-project.properties file to the project root and name it ‎sonar-project.properties"
-          mv ${{ inputs.sonar-properties-path }} ‎sonar-project.properties
+        if [ "${{ inputs.sonar-properties-path }}" != "sonar-project.properties" ] && [ -f "${{ inputs.sonar-properties-path }}" ]; then
+          echo "::warning Your project is using the deprecated sonar-properties-path input! Please move your sonar-project.properties file to the project root and name it sonar-project.properties"
+          mv "${{ inputs.sonar-properties-path }}" sonar-project.properties
         fi
+
     - name: SonarQube Scan Pull Request
       if: github.event_name == 'pull_request'
-      uses: SonarSource/sonarqube-scan-action@v6
+      uses: SonarSource/sonarqube-scan-action@v7
       env:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
       with:
         projectBaseDir: ${{ inputs.working-dir }}
         # Consult https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/scanners/sonarscanner/ for more information and options
         args: >
-          -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }} 
+          -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }}
           -Dsonar.pullrequest.branch=$PR_HEAD_REF 
           -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
+
     - name: SonarQube Scan main branch
       if: github.event_name != 'pull_request'
-      uses: SonarSource/sonarqube-scan-action@v6
+      uses: SonarSource/sonarqube-scan-action@v7
       env:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
       with:
