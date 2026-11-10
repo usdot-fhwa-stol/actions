@@ -14,6 +14,7 @@ jobs:
     uses: ./.github/workflows/cpp-module-build.yml
     with:
       build: true
+      build-image-tag: ci-update-ubuntu-runner-resolute
       build-architecture: ${{ matrix.architecture }}
       working-folder: tests/cpp_project
       component-name: resolute
