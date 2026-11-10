@@ -16,7 +16,7 @@ on:
         description: 'Build image tag for ghcr.io/usdot-fhwa-stol/carma-builds'
         required: false
         type: string
-        default: 'focal'
+        default: 'resolute'
       bucket-codename:
         description: 'Bucket codename, defaults to null, which will determine the codename using determine_codename.sh'
         required: false

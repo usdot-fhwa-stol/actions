@@ -11,12 +11,12 @@ jobs:
     strategy:
       matrix:
         architecture: [x64, armhf, arm64]
-    uses: usdot-fhwa-stol/actions/.github/workflows/cpp-module-build.yml@main
+    uses: ./.github/workflows/cpp-module-build.yml
     with:
       build: true
       build-architecture: ${{ matrix.architecture }}
       working-folder: tests/cpp_project
-      component-name: focal
+      component-name: resolute
     secrets:
       aws-access-key-id: ${{ secrets.APT_REPO_AWS_ACCESS_KEY_ID }}
       aws-secret-access-key: ${{ secrets.APT_REPO_AWS_SECRET_ACCESS_KEY }}
