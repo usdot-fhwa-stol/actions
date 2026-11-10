@@ -16,7 +16,7 @@ on:
         description: 'Build image tag for ghcr.io/usdot-fhwa-stol/carma-builds'
         required: false
         type: string
-        default: 'focal'
+        default: 'resolute'
       bucket-codename:
         description: 'Bucket codename, defaults to null, which will determine the codename using determine_codename.sh'
         required: false
@@ -90,7 +90,7 @@ jobs:
     needs:
       - cpp-module-build
     container:
-      image: ghcr.io/usdot-fhwa-stol/actions-deb-s3:main
+      image: ghcr.io/usdot-fhwa-stol/actions-deb-s3@sha256:26652bfe0cc37def8c3c154c66d7594ba2b1720ecb147c39ae6ca6005b6f7591
     steps:
       - name: Publish deb artifacts
         uses: usdot-fhwa-stol/actions/deb-s3-upload@main
