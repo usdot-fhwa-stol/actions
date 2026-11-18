@@ -41,12 +41,14 @@ done
 if [ "$SUPPORTED" == "true" ]; then
     echo "Supported distro codename: $DISTRO_CODENAME"
 
-    KEY_URL="https://raw.githubusercontent.com/deb-s3/deb-s3/master/deb-s3-archive-keyring.gpg"
-    SOURCE="deb http://deb-s3-repo.s3.us-east-2.amazonaws.com/${DISTRO_ID,,}/ $DISTRO_CODENAME main"
+    KEY_URL="https://deb-s3.github.io/deb-s3/gpg.key"
+    SOURCE="deb https://deb-s3.github.io/deb-s3 deb-s3 main"
+    #SOURCE="deb http://deb-s3-repo.s3.us-east-2.amazonaws.com/${DISTRO_ID,,}/ $DISTRO_CODENAME main"
 
     $sudocmd apt-get update || true
     $sudocmd apt-get -y install wget
-    $sudocmd wget -O /etc/apt/trusted.gpg.d/deb-s3-archive-keyring.gpg "$KEY_URL"
+    #$sudocmd wget -O /etc/apt/trusted.gpg.d/deb-s3-archive-keyring.gpg "$KEY_URL"
+    $sudocmd wget -O /etc/apt/trusted.gpg.d/deb-s3-keyring.asc "$KEY_URL"
     echo "$SOURCE" | $sudocmd tee -a /etc/apt/sources.list
     $sudocmd apt-get update || true
     $sudocmd apt-get -y install deb-s3
